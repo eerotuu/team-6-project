@@ -58,7 +58,7 @@ body, html {
     margin-right: 150px;
     margin-left: 55px;
     width: 1220px;
-    height: 755px;
+    height: 770px;
     z-index: 2;
     opacity: 0.95;
 }
@@ -103,4 +103,19 @@ caption {
 }
 table {
     background-image: linear-gradient(to right,blue,green);
+}
+
+#footerbar {
+    height: 100px;
+    width: 100%;
+    margin-top: -10px;
+    background-color: black;
+    position: relative;
+    z-index: 3;
+}
+#footertext {
+    color: white;
+    float: right;
+    margin-top: 70px;
+    margin-right: 10px;
 }
