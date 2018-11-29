@@ -149,7 +149,7 @@
         return $jsonResponse[0]->event->name;
     }
 
-    //Returns the event date
+	//Returns the event date
     function getEventDate($appKey, $sessionToken, $eventId) {
         $filter = '{"filter":{"eventIds":["' . $eventId . '"], "marketTypeCodes":["MATCH_ODDS"]}, 
                     "marketProjection":["EVENT"],  
@@ -157,7 +157,6 @@
         $jsonResponse = sportsApingRequest($appKey, $sessionToken, 'listMarketCatalogue', $filter);
         return $jsonResponse[0]->event->openDate;
     }
-
     //Returns the event name and -odds in an array
     function getEventOdds($appKey, $sessionToken, $marketId, $eventId) {
         $odds = array();
@@ -167,7 +166,7 @@
         $jsonResponse = sportsApingRequest($appKey, $sessionToken, 'listMarketBook', $params);
         $runners = $jsonResponse[0]->runners;
         $odds["Name"] = getEventName($appKey, $sessionToken, $eventId);
-        $odds["Date"] = getEventDate($appKey, $sessionToken, $eventId);
+		$odds["Date"] = getEventDate($appKey, $sessionToken, $eventId);
         $odds["HomeTeam"] = $runners[0]->ex->availableToBack[0]->price;
         $odds["AwayTeam"] = $runners[1]->ex->availableToBack[0]->price;
         $odds["Draw"] = $runners[2]->ex->availableToBack[0]->price;
@@ -205,15 +204,40 @@
     //6) Choose an event from an an array received from the getEventsInEventType-function
     //Then store its Id in a variable
     $events = getEventsInEventType($appKey, $sessionToken, $eventTypeId, $countryCode, $competitionId, $now, $nextWeek);
-    $eventId = $events[0]->id;
+    //$eventId = $events[0]->id;
+	$resultArray = array();
+	foreach($events as $event){
+		$eventId = $event->id;
+		$marketId = getMarketId($appKey,$sessionToken,$eventId);
+		$resultArray[] = getEventOdds($appKey, $sessionToken, $marketId, $eventId);
+	}
 
     //7) Get the marketId
     //Events can have multiple markets, for example "Match winner", "End result"
     //getMarketId()-function looks for "End result" markets
-    $marketId = getMarketId($appKey, $sessionToken, $eventId);
+    //$marketId = getMarketId($appKey, $sessionToken, $eventId);
 
     //8) Get the event odds and name in an associative array
-    var_dump(getEventOdds($appKey, $sessionToken, $marketId, $eventId));
+    //var_dump(getEventOdds($appKey, $sessionToken, $marketId, $eventId));
+	$connect = mysqli_connect("localhost", "eero", "eero", "betfair");
+	if ($connect->connect_error) {
+		die("Connection failed: " . $connect->connect_error);
+	} 
+	
+	foreach($resultArray as $row) {
+		
+		//Modify Date format to SQL DATETIME() format
+		$row["Date"] = preg_replace("/[^T0-9-:.]/", "", $row["Date"]);
+		$row["Date"] = preg_replace("/[^0-9-:.]/", " ", $row["Date"]);
+		$row["Date"] = str_replace(".000", "", $row["Date"]);
+		
+		$query = "INSERT INTO events (Name, HomeTeam, AwayTeam, Draw, Date)
+				SELECT * FROM (SELECT '".$row["Name"]."', '".$row["HomeTeam"]."', '".$row["AwayTeam"]."', '".$row["Draw"]."', '".$row["Date"]."') AS tmp
+				WHERE NOT EXISTS (SELECT * FROM events WHERE Name = '".$row["Name"]."' AND Date = '".$row["Date"]."') LIMIT 1";
+		
+		mysqli_query($connect, $query);
+	}
+	
 
     //Check if the values are about the same in this website: https://www.betfair.com/sport/football
     //Select Spanish La Liga as the league
