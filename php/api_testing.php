@@ -8,7 +8,7 @@
     //returns the sessionToken on login success or null on login failure
     function login($username, $password, $appKey) {
         $ch = curl_init();
-        $crtPath = "C:\Users\miikk\PhpstormProjects\Team_6_Project\cert\client-2048.pem";
+        $crtPath = "C:\cert\client-2048.pem";
         curl_setopt($ch, CURLOPT_SSLCERT, $crtPath);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_URL, "https://identitysso-cert.betfair.com/api/certlogin");
@@ -149,6 +149,15 @@
         return $jsonResponse[0]->event->name;
     }
 
+    //Returns the event date
+    function getEventDate($appKey, $sessionToken, $eventId) {
+        $filter = '{"filter":{"eventIds":["' . $eventId . '"], "marketTypeCodes":["MATCH_ODDS"]}, 
+                    "marketProjection":["EVENT"],  
+                    "maxResults":"1"}';
+        $jsonResponse = sportsApingRequest($appKey, $sessionToken, 'listMarketCatalogue', $filter);
+        return $jsonResponse[0]->event->openDate;
+    }
+
     //Returns the event name and -odds in an array
     function getEventOdds($appKey, $sessionToken, $marketId, $eventId) {
         $odds = array();
@@ -158,6 +167,7 @@
         $jsonResponse = sportsApingRequest($appKey, $sessionToken, 'listMarketBook', $params);
         $runners = $jsonResponse[0]->runners;
         $odds["Name"] = getEventName($appKey, $sessionToken, $eventId);
+        $odds["Date"] = getEventDate($appKey, $sessionToken, $eventId);
         $odds["HomeTeam"] = $runners[0]->ex->availableToBack[0]->price;
         $odds["AwayTeam"] = $runners[1]->ex->availableToBack[0]->price;
         $odds["Draw"] = $runners[2]->ex->availableToBack[0]->price;
