@@ -59,19 +59,18 @@ function hideEvents() {
 
 function showEvents() {
 	var table = document.getElementById('myTable');
-	for(var i = 0; i<10; i++){
+	for(var i = 0; i<4; i++){
 		var row = table.insertRow(0);
 		var cell1 = row.insertCell(0);
 		cell1.innerHTML = 'Eventin nimi';
 	}
 }
 
-
 var ypos;
 var image;
 window.addEventListener('scroll', function() {
 	ypos = window.pageYOffset;
 	image = document.getElementById('centerblock');
-	image.style.top = ypos * 0.8 + 'px';
+	image.style.top = ypos * 0.6 + 'px';
 });
 

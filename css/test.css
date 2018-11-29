@@ -106,7 +106,7 @@ table {
 }
 
 #footerbar {
-    height: 100px;
+    height: 400px;
     width: 100%;
     margin-top: -10px;
     background-color: black;
@@ -119,3 +119,4 @@ table {
     margin-top: 70px;
     margin-right: 10px;
 }
+

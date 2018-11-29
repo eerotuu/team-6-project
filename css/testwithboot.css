@@ -56,6 +56,9 @@ body, html {
 #centerblock {
     background-image: linear-gradient(grey,black);
     opacity: 0.90;
+    height: 680px;
+    z-index: 1;
+    position: relative;
 }
 
 #comparision {
@@ -103,4 +106,26 @@ table {
 
 .centered{
     margin: 0 auto;
+}
+
+#footerbar {
+    height: 100px;
+    width: 100%;
+    margin-top: -10px;
+    background-color: black;
+    position: relative;
+    z-index: 3;
+}
+#footertext {
+    color: white;
+    float: right;
+    margin-top: 70px;
+    margin-right: 10px;
+}
+#eventbutton {
+    margin-left: 106px;
+}
+#temp {
+    color: white;
+    font-weight: bold;
 }
