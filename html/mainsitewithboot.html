@@ -38,9 +38,9 @@
 
 <div class="container">
     <div class="centered text-center" id="centerblock">
-        <h1 id="h1">Teams</h1>
+        <h1 id="h1">Champion's League</h1>
         <table id="table1">
-            <caption class="text-center">Champion's League</caption>
+            <caption class="text-center">Teams</caption>
             <thead class="text-center">
             <tr>
                 <th class="text-center">Clubs</th>
@@ -70,24 +70,35 @@
             </thead>
         </table>
         <br>
-        <form action="" id="comparision" class="centered text-center">
-            Team 1: <input type="text" name="Team1" value="Team 1"> Team 2: <input type="text" name="Team2" value="Team 2">
+        <form action="" class="center-block" id="comparision">
+            Team 1: <input type="text" name="Team1" placeholder="Team 1"> Team 2: <input type="text" name="Team2" placeholder="Team 2">
             <br>
             <button type="button" id="compare">Compare</button>
         </form>
         <br>
-        <button id="eventbutton" onclick="tableCreate()">Show matches</button>
-        <button id="hidebutton" onclick="hideEvents()">Hide matches</button>
-        <div id="tablespace"></div>
+        <button class="center-block" id="eventbutton" onclick="tableCreate()">Show matches</button>
+        <button class="center-block" id="hidebutton" onclick="hideEvents()">Hide matches</button>
+        <br>
+        <div class="center-block" id="tablespace"></div>
         <br>
         <h2 id="temp">Tähän saa loopattuu jotain</h2>
         <table id="myTable"></table>
     </div>
 
 </div>
+
 <div id="footerbar">
     <p id="footertext"><------ tätä voi muokkaa lisää. Gamblerino productions. All rights reserved.</p>
 </div>
+
+<!-- yksi mahdollisuus footerille, näkyvillä kokoajan, jos kokeilee niin ottaa ylemmän footerin pois
+ja poistaa tämän kommenteista niin näkee miten toimii
+
+<div class="footer">
+    <p>Gamblerino productions. All rights reserved.</p>
+</div>
+-->
+
 <script src="../js/mainsivu_js.js"></script>
 </body>
 
