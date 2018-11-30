@@ -6,15 +6,35 @@ body {
     background-size: cover;
 }
 
+body, html {
+    height: 100%;
+    margin: 0;
+}
 img {
     float: left;
     position: sticky;
     top: 0;
 }
 
-body, html {
-    height: 100%;
-    margin: 0;
+caption {
+    width: auto;
+    font-weight: bold;
+    font-size: 50px;
+    width: 400px;
+    font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial, sans-serif;
+}
+
+table {
+    background-image: linear-gradient(to right,orange,lightgrey);
+}
+
+table, th, td{
+    border: 1px solid black;
+    text-align: center;
+    margin-right: auto;
+    margin-left: auto;
+    float: inherit;
+    font-size: 20px;
 }
 
 .bg {
@@ -22,13 +42,40 @@ body, html {
     height: 100%;
     background-position: center;
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size: auto;
 }
+
+.footer {
+     position: sticky;
+     left: 0;
+     bottom: 0;
+     width: 100%;
+     background-color: red;
+     color: white;
+     text-align: center;
+ }
+
 .sticky {
     position: fixed;
     top: 0;
     width: 100%;
 }
+
+.centered{
+    margin: 0 auto;
+}
+
+#logo {
+    border-radius: 50%;
+}
+
+#h1 {
+    width: auto;
+    border: black 1px solid;
+    background-color: darkorange;
+    font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial, sans-serif;
+}
+
 #centerblock {
     background-image: linear-gradient(grey,black);
     opacity: 0.90;
@@ -41,30 +88,7 @@ body, html {
     color: #bfbfbf;
     font-weight: bold;
 }
-#logo {
-    border-radius: 50%;
-}
-table, th, td{
-    border: 1px solid black;
-    text-align: center;
-    margin-right: auto;
-    margin-left: auto;
-    float: inherit;
-    font-size: 20px;
-}
-caption {
-    width: auto;
-    font-weight: bold;
-    font-size: 50px;
-    width: 400px;
-    font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial, sans-serif;
-}
-#h1 {
-    width: auto;
-    border: black 1px solid;
-    background-color: darkorange;
-    font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial, sans-serif;
-}
+
 #compare {
     margin-top: 8px;
     background-image: linear-gradient(white,black);
@@ -73,12 +97,9 @@ caption {
     height: 40px;
     font-weight: bold;
 }
-table {
-    background-image: linear-gradient(to right,orange,lightgrey);
-}
 
-.centered{
-    margin: 0 auto;
+#eventbutton {
+    margin-left: 106px;
 }
 
 #footerbar {
@@ -95,20 +116,10 @@ table {
     margin-top: 70px;
     margin-right: 10px;
 }
-#eventbutton {
-    margin-left: 106px;
-}
+
 #temp {
     color: white;
     font-weight: bold;
 }
 
-.footer {
-    position: sticky;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    background-color: red;
-    color: white;
-    text-align: center;
-}
+
