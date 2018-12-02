@@ -3,8 +3,7 @@ window.onscroll = function (){
 };
 window.onload = function() {
     document.getElementById('hidebutton').style.visibility = 'hidden';
-    getEvents();
-    //showEvents();
+    getAllEvents();
 };
 var navbar = document.getElementsByClassName('topnav');
 var sticky = navbar.offsetTop;
@@ -68,7 +67,7 @@ function showEvents(rankedTeams) {
     let td2 = document.createElement('td');
     td2.innerHTML = "Team name";
     let td3 = document.createElement('td');
-    td3.innerHTML = "Odds";
+    td3.innerHTML = "Score";
     firstRow.appendChild(td1);
     firstRow.appendChild(td2);
     firstRow.appendChild(td3);
@@ -92,8 +91,50 @@ function showEvents(rankedTeams) {
     table.appendChild(tBody);
 }
 
+function compareTeams() {
+    let form = document.forms["comparison"];
+    console.log(form.children[0].value);
+    let team1Name = form["Team1"].value;
+    let team2Name = form["Team2"].value;
+    let team1WinOdds = 0;
+    let drawOdds = 0;
+    let team2WinOdds = 0;
+    let eventCount = 0;
+    eventArray.forEach(function (event) {
+        let homeTeamName = event["Name"].split(" v ")[0];
+        let awayTeamName = event["Name"].split(" v ")[1];
+        if ((homeTeamName === team1Name || homeTeamName === team2Name) && (awayTeamName === team1Name || awayTeamName === team2Name)) {
+            if (team1Name === homeTeamName) {
+                team1WinOdds += event["HomeTeam"];
+                team2WinOdds += event["AwayTeam"];
+            } else {
+                team2WinOdds += event["HomeTeam"];
+                team1WinOdds += event["AwayTeam"];
+            }
+            drawOdds += event["Draw"];
+            eventCount++;
+        }
+    });
+
+    if (eventCount > 0) {
+        team1WinOdds /= eventCount;
+        drawOdds /= eventCount;
+        team2WinOdds /= eventCount;
+        team1WinOdds = Math.round(team1WinOdds * 100) / 100;
+        drawOdds = Math.round(drawOdds * 100) / 100;
+        team2WinOdds = Math.round(team2WinOdds * 100) / 100;
+        let header = document.getElementById("comparisonResult");
+        header.innerText = team1Name + " Winning Factor: " + team1WinOdds + ", Draw Factor: " + drawOdds + ", " + team2Name + " Winning Factor: " + team2WinOdds;
+    } else {
+        alert("Either you wrote invalid team name(s) or there are no records between these teams.")
+    }
+
+}
+
 let httpRequest;
-function getEvents() {
+let eventArray;
+let teams;
+function getAllEvents() {
     let url = "http://81.197.165.237/api/events";
     if (window.XMLHttpRequest) { // Mozilla, Safari, ...
         httpRequest = new XMLHttpRequest();
@@ -127,8 +168,8 @@ function alertContents() {
     if (httpRequest.readyState === 4) {
         if (httpRequest.status === 200) {
             //alert(httpRequest.responseText);
-            let eventArray = JSON.parse(httpRequest.responseText);
-            let rankedTeams = rankTeams(eventArray);
+            eventArray = JSON.parse(httpRequest.responseText);
+            let rankedTeams = rankTeams();
             showEvents(rankedTeams);
         } else if (httpRequest.status === 404) {
             alert("Site is DOWN!");
@@ -139,9 +180,10 @@ function alertContents() {
     }
 }
 
-function rankTeams(eventArray) {
+
+function rankTeams() {
     let teamNames = [];
-    let teams = [];
+    teams = [];
 
     //Get a list of all the team names
     eventArray.forEach(function (event) {

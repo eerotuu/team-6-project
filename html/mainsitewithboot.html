@@ -43,11 +43,12 @@
             <caption class="text-center">Teams</caption>
         </table>
         <br>
-        <form action="" class="center-block" id="comparision">
-            Team 1: <input type="text" name="Team1" placeholder="Team 1"> Team 2: <input type="text" name="Team2" placeholder="Team 2">
+        <form name="comparison" action="" class="center-block" id="comparison">
+            Team 1: <input id="team1" type="text" name="Team1" placeholder="Team 1"> Team 2: <input id="team2" type="text" name="Team2" placeholder="Team 2">
             <br>
-            <button type="button" id="compare">Compare</button>
+            <button type="button" id="compare" onclick="compareTeams()">Compare</button>
         </form>
+        <h2 id="comparisonResult"></h2>
         <br>
         <button class="center-block" id="eventbutton" onclick="tableCreate()">Show matches</button>
         <button class="center-block" id="hidebutton" onclick="hideEvents()">Hide matches</button>
