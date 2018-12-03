@@ -1,12 +1,15 @@
 window.onload = function () {
     document.getElementById('hidebutton').style.visibility = 'hidden';
+    getComments();
     getAllEvents();
-		adsLoop();
+
+    adsLoop();
 		adsLoop2();
 		setInterval(function() {
 				adsLoop();
 				adsLoop2();
 		}, adsTimer);
+
 };
 
 function easterEgg() {
@@ -429,4 +432,105 @@ function adsLoop2() {
 
 function scamaz() {
 		alert('You have been scammed!');
+}
+
+function postComment() {
+    var name = document.getElementById('form-name').value;
+    var message = document.getElementById('form-message').value;
+    var url = "http://81.197.165.237/api/comments/?name="+name+"&message="+message;
+
+    if (window.XMLHttpRequest) { // Mozilla, Safari, ...
+        httpRequest = new XMLHttpRequest();
+    } else if (window.ActiveXObject) { // IE
+        try {
+            httpRequest = new ActiveXObject("Msxml2.XMLHTTP");
+        }
+        catch (e) {
+            try {
+                httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            catch (e) {
+            }
+        }
+    }
+
+    if (!httpRequest) {
+        alert('Giving up :( Cannot create an XMLHTTP instance');
+        return false;
+    }
+
+    httpRequest.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 201) {
+            var result = JSON.parse(this.responseText)
+            alert(result.message);
+            window.location.reload();
+        }
+    };
+
+    httpRequest.open("POST",url, true);
+    httpRequest.send();
+}
+function getComments() {
+    let httpRequest;
+    let url = "http://81.197.165.237/api/comments";
+    if (window.XMLHttpRequest) { // Mozilla, Safari, ...
+        httpRequest = new XMLHttpRequest();
+    } else if (window.ActiveXObject) { // IE
+        try {
+            httpRequest = new ActiveXObject("Msxml2.XMLHTTP");
+        }
+        catch (e) {
+            try {
+                httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            catch (e) {
+            }
+        }
+    }
+
+    if (!httpRequest) {
+        alert('Giving up :( Cannot create an XMLHTTP instance');
+        return false;
+    }
+
+    httpRequest.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            //alert(this.responseText);
+            let arr = JSON.parse(this.responseText);
+
+            let comments = document.getElementById('comments');
+
+            arr.forEach(function (comment) {
+                let name = comment["name"];
+                let time = comment["time_stamp"];
+                let message = comment["message"];
+
+                let this_comment = document.createElement("div");
+                this_comment.className = "comment";
+                let row = document.createElement("span");
+                row.className = "comment-header";
+                let name_text = document.createElement("div");
+                name_text.className = "comment-name"
+                name_text.innerHTML = name;
+                let time_text = document.createElement("div");
+                time_text.className = "comment-time";
+                time_text.innerHTML = time;
+                row.appendChild(name_text);
+                row.appendChild(time_text);
+                this_comment.appendChild(row);
+
+                let message_text = document.createElement("div");
+                message_text.className = "comment-message";
+                message_text.innerHTML = message;
+                this_comment.appendChild(message_text);
+
+                comments.appendChild(this_comment);
+
+            });
+        }
+    };
+
+    // now do the actual AJAX request
+    httpRequest.open('GET', url);
+    httpRequest.send();
 }

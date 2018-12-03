@@ -1,0 +1,52 @@
+.comment-header {
+
+}
+
+.comment-header *{
+    display: inline;
+    padding: 10px;
+}
+
+.comment-name {
+    font-weight: bold;
+}
+
+.comment-time {
+
+}
+
+.comment-message {
+    padding: 10px;
+    margin-left: 10px;
+    text-align: left;
+}
+
+.comment {
+    text-align: left;
+    border: 1px solid red;
+    background-color: white;
+    margin: 10px;
+    max-width: 500px;
+    min-width: 400px;
+}
+#comments {
+    margin: auto;
+    width: 50%;
+    padding-bottom: 50px;
+}
+
+#comments h1 {
+    text-align: left;
+    color: white;
+    text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+}
+
+.comment-post #form-name, #form-message {
+    padding: 6px;
+}
+
+.comment-post *{
+    display: block;
+    margin: 10px;
+
+}
