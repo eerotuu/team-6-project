@@ -170,6 +170,7 @@
         $odds["HomeTeam"] = $runners[0]->ex->availableToBack[0]->price;
         $odds["AwayTeam"] = $runners[1]->ex->availableToBack[0]->price;
         $odds["Draw"] = $runners[2]->ex->availableToBack[0]->price;
+		$odds["id"] = $eventId;
         return $odds;
     }
 
@@ -189,7 +190,7 @@
 
     //2) Choose a time range from which events are chosen
     $now = time();
-    $nextWeek = time() + 7 * 24 * 60 * 60;
+    $nextWeek = time(); + 7 * 24 * 60 * 60;
 
     //3) Choose an eventTypeName from the array received from the getAllEventTypeNames()-function
     //In this example the name has already been chosen: '$eventTypeName = "Soccer"'
@@ -231,9 +232,9 @@
 		$row["Date"] = preg_replace("/[^0-9-:.]/", " ", $row["Date"]);
 		$row["Date"] = str_replace(".000", "", $row["Date"]);
 		
-		$query = "INSERT INTO events (Name, HomeTeam, AwayTeam, Draw, Date)
-				SELECT * FROM (SELECT '".$row["Name"]."', '".$row["HomeTeam"]."', '".$row["AwayTeam"]."', '".$row["Draw"]."', '".$row["Date"]."') AS tmp
-				WHERE NOT EXISTS (SELECT * FROM events WHERE Name = '".$row["Name"]."' AND Date = '".$row["Date"]."') LIMIT 1";
+		$query = "INSERT INTO events (id, Name, HomeTeam, AwayTeam, Draw, Date)
+		VALUES('".$row["id"]."', '".$row["Name"]."', '".$row["HomeTeam"]."', '".$row["AwayTeam"]."', '".$row["Draw"]."', '".$row["Date"]."')
+		ON DUPLICATE KEY UPDATE HomeTeam=VALUES(HomeTeam), AwayTeam=VALUES(AwayTeam), Draw=VALUES(Draw)";
 		
 		mysqli_query($connect, $query);
 	}

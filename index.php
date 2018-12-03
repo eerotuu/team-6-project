@@ -1,7 +1,9 @@
 <?php
-// initialize
+# initialize
 
-//include 'php/api_testing.php';
+include_once 'php/database.php';
+include_once 'php/api/events.php';
+include_once 'php/api/comments.php';
 
 # URI parser helper functions
 # ---------------------------
@@ -44,74 +46,177 @@
  
 # Handlers
 # ------------------------------
-
-	function postEvents($parameters) {
-		$connect = mysqli_connect("localhost","eero","eero","betfair");
-		$query = "CREATE TABLE IF NOT EXISTS Events (
-					id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-					Name VARCHAR(30) NOT NULL,
-					HomeTeam FLOAT NOT NULL,
-					AwayTeam FLOAT NOT NULL,
-					Draw FLOAT NOT NULL,
-					Date DATETIME NOT NULL
-				)";
-		if ($connect->query($query) === FALSE) {
-			echo "Error creating table: " . $conn->error;
-		} 
-	}
 	
-	function getEvents(){
-		$connect = mysqli_connect("localhost","eero","eero","betfair");
-		if ($connect->connect_error) {
-			die("Connection failed: " . $connect->connect_error);
-		} 
-		$query = "SELECT * FROM events";
-		$result = $connect->query($query);
-		$json_array = array();
-		$connect->close();
-		while($row = mysqli_fetch_assoc($result)) {
-			$json_array[] = $row;
-		}
+	# GET ALL EVENTS
+	function getEvents() {
+		header("Access-Control-Allow-Origin: *");
 		header('Content-Type: application/json');
-		echo json_encode($json_array, JSON_PRETTY_PRINT);
-	}
-
-
-	function postData($parameters) {
-		$connect = mysqli_connect("localhost","eero","eero","betfair");
-		$query = "CREATE TABLE IF NOT EXISTS test (
-					id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-					firstname VARCHAR(30) NOT NULL,
-					lastname VARCHAR(30) NOT NULL
-				)";
-		if ($connect->query($query) === FALSE) {
-			echo "Error creating table: " . $conn->error;
-		} 
 		
-		//$id=urldecode($parameters["id"]);
-		$firstname=urldecode($parameters["firstname"]);
-		$lastname=urldecode($parameters["lastname"]);
-		$query = "INSERT INTO test(firstname, lastname) VALUES('$firstname', '$lastname')";
-		if ($connect->query($query) === FALSE) {
-			echo "Error inserting data: " . $conn->error;
+		$database = new Database();
+		$conn = $database->getConnection();
+		$events = new Events($conn);
+		
+		$stmt = $events->read(); // get result statement
+		$num = $stmt->rowCount();
+		if ($num>0) {
+			$events_arr = array();
+			while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+
+                // convert row data to array and add it to output array
+				extract($row);
+
+				$event=array(
+					"id" => $id,
+					"Name" => $Name,
+					"HomeTeam" => $HomeTeam,
+					"AwayTeam" => $AwayTeam,
+					"Draw" => $Draw,
+					"Date" => $Date
+				);
+ 
+				array_push($events_arr, $event);
+			}
+            http_response_code(200);
+            echo json_encode($events_arr, JSON_PRETTY_PRINT);
 		} else {
-			echo 'OK';
+            http_response_code(204);
+            echo json_encode(array("message" => "No Data Found"));
 		}
-		
+
 	}
 	
-	function getBetfair() {
-		$connect = mysqli_connect("localhost","eero","eero","betfair");
-		$query = "SELECT * FROM test";
-		$result = mysqli_query($connect, $query);
-		$json_array = array();
+	# GET EVENTS BY NAME
+	function getEventsByName(){
+		header("Access-Control-Allow-Origin: *");
+		header("Content-Type: application/json; charset=UTF-8");
+		 
+		$database = new Database();
+		$db = $database->getConnection();
+		$events = new Events($db);
+		$keywords=isset($_GET["name"]) ? $_GET["name"] : "";
+		$stmt = $events->search($keywords);
+		$num = $stmt->rowCount();
+		 
+		if($num>0){
+		 
+			$events_arr=array();
+		 
+			while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
 
-		while($row = mysqli_fetch_assoc($result)) {
-			$json_array[] = $row;
-		}
-		header('Content-Type: application/json');
-		echo json_encode($json_array, JSON_PRETTY_PRINT);
+				extract($row);
+		 
+				$event=array(
+					"id" => $id,
+					"Name" => $Name,
+					"HomeTeam" => $HomeTeam,
+					"AwayTeam" => $AwayTeam,
+					"Draw" => $Draw,
+					"Date" => $Date
+				);
+		 
+		 
+				array_push($events_arr, $event);
+			}
+		 
+			http_response_code(200);
+			echo json_encode($events_arr, JSON_PRETTY_PRINT);
+		} else {
+            http_response_code(204);
+            echo json_encode(array("message" => "No Data Found"));
+        }
 	}
+	
+	# POST COMMENT
+	function postComment($parameters){
+		header("Access-Control-Allow-Origin: *");
+		header("Content-Type: application/json");
+		header("Access-Control-Allow-Methods: POST");
+		header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+		 
+		 
+		$database = new Database();
+		$db = $database->getConnection();
+		 
+		$comment = new Comment($db);
+		 
+		// get posted data from url to object array
+		$data=(object)array(
+            "name" => $parameters["name"],
+            "time_stamp" => date("Y-m-d H:i:s", time()),
+            "message" => $parameters["message"]
+        );
+
+
+		
+		// make sure data is not empty
+		if(
+			!empty($data->name) &&
+			!empty($data->time_stamp) &&
+			!empty($data->message)
+			
+		){
+		 
+			// set the comment property values
+			$comment->name = $data->name;
+			$comment->time_stamp = $data->time_stamp;
+			$comment->message = $data->message;
+		 
+			// create
+			if($comment->create()){
+				http_response_code(201); # Created
+				echo json_encode(array("message" => "Comment was created successfully."));
+			}
+		 
+			// if unable to create the comment
+			else{
+				http_response_code(503); # Service unavailable
+				echo json_encode(array("message" => "Unable to create Comment."));
+			}
+		}
+		 
+		// tell the user data is incomplete
+		else{
+			http_response_code(400); # Bad request
+			echo json_encode(array("message" => "Unable to create comment. Data is incomplete."));
+		}
+	}
+	
+	# GET ALL COMMENTS
+	function getComments(){
+		header("Access-Control-Allow-Origin: *");
+		header('Content-Type: application/json');
+		
+		$database = new Database();
+		$conn = $database->getConnection();
+		$comments = new Comment($conn);
+		
+		$stmt = $comments->read();
+		$num = $stmt->rowCount();
+		if ($num>0) {
+			$comments_arr = array();
+			while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+				extract($row);
+				
+				$comment=array(
+					"id" => $id,
+					"name" => $name,
+					"time_stamp" => $time_stamp,
+					"message" => $message
+				);
+ 
+				array_push($comments_arr, $comment);
+				
+			}
+            http_response_code(200);
+            echo json_encode($comments_arr, JSON_PRETTY_PRINT);
+		} else {
+            http_response_code(200);
+            echo json_encode(array("message" => "No Data Found"));
+        }
+
+	}
+
+	
 
 # Main
 # ----
@@ -121,28 +226,63 @@
     $parameters = getParameters();
 
     # Redirect to appropriate handlers.
-	if ($resource[0]=="api") {
-		if ($request_method=="POST" && $resource[1]=="person") {
-        	postData($parameters);
-    	}
-		else if ($request_method=="GET" && $resource[1]=="persons") {
-			getBetfair();
+
+	switch ($resource[0]) {
+        case 'api' : {
+        	switch ($request_method) {
+            	case 'GET' :
+                	getHandler($resource[1]);
+                	break;
+            	case 'POST' :
+                	postHandler($resource[1], $parameters);
+                	break;
+        	}
+        	break;
+        }
+		case null : {
+            readfile("index.html");
 		}
-		else if ($request_method=="GET" && $resource[1]=="events") {
-			getEvents();
+		default : {
+            http_response_code(405); # Method not allowed
+            echo json_encode(array("message" => "Method not Allowed"));
 		}
-		else if ($request_method=="POST" && $resource[1]=="event") {
-			postEvents($parameters);
+
+	}
+
+
+	function getHandler($resource){
+		switch($resource) {
+			case 'events' :
+                if(isset($_GET["name"])){
+                    getEventsByName();
+                } else {
+                    getEvents();
+                }
+				break;
+			case 'comments' :
+                getComments();
+				break;
+			case 'update' : {
+				include 'php/update.php';
+				break;
+			}
+			default :
+                http_response_code(405); # Method not allowed
+                echo json_encode(array("message" => "Method not Allowed"));
+
 		}
 	}
-	
-	if ($resource[0]==null) {
-		header("Location: /html/index.html"); /* Redirect browser */
-		exit();
-	}
-	
-	else {
-		http_response_code(405); # Method not allowed
+
+	function postHandler($resource, $param){
+		switch($resource) {
+			case 'comments' :
+				postComment($param);
+				break;
+            default :
+                http_response_code(405); # Method not allowed
+                echo json_encode(array("message" => "Method not Allowed"));
+
+		}
 	}
 ?>
 
