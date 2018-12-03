@@ -1,18 +1,21 @@
 .comment-header {
-
+    width: 100%;
+    float: left;
 }
 
 .comment-header *{
-    display: inline;
+    display: inline-block;
     padding: 10px;
 }
 
 .comment-name {
     font-weight: bold;
+    width: 50%;
 }
 
 .comment-time {
-
+    text-align: right;
+    width: 50%;
 }
 
 .comment-message {
@@ -23,11 +26,13 @@
 
 .comment {
     text-align: left;
-    border: 1px solid red;
+    border: 1px solid gray;
+    border-radius: 6px;
     background-color: white;
     margin: 10px;
     max-width: 500px;
     min-width: 400px;
+
 }
 #comments {
     margin: auto;

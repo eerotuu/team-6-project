@@ -502,7 +502,13 @@ function getComments() {
 
             arr.forEach(function (comment) {
                 let name = comment["name"];
+
                 let time = comment["time_stamp"];
+                time = mysqlTimeStampToDate(time);
+                let current_time = new Date();
+                time = calculateTimeDifference(time, current_time);
+
+
                 let message = comment["message"];
 
                 let this_comment = document.createElement("div");
@@ -533,4 +539,42 @@ function getComments() {
     // now do the actual AJAX request
     httpRequest.open('GET', url);
     httpRequest.send();
+}
+
+
+function mysqlTimeStampToDate(timestamp) {
+    //function parses mysql datetime string and returns javascript Date object
+    //input has to be in this format: 2007-06-05 15:26:02
+    var regex=/^([0-9]{2,4})-([0-1][0-9])-([0-3][0-9]) (?:([0-2][0-9]):([0-5][0-9]):([0-5][0-9]))?$/;
+    var parts=timestamp.replace(regex,"$1 $2 $3 $4 $5 $6").split(' ');
+    return new Date(parts[0],parts[1]-1,parts[2],parts[3],parts[4],parts[5]);
+}
+
+function calculateTimeDifference(old_time, current_time) {
+    let time_difference = Math.abs(old_time - current_time);
+    let days = time_difference/ (1000 * 3600 * 24);
+    if(days < 1){
+        let hours = time_difference / 36e5;
+        if(hours < 1) {
+            let minutes = ((time_difference % 86400000) % 3600000) / 60000;
+            if (minutes === 1){
+                return " minute ago";
+            } else if (minutes < 1) {
+                return " less than minute ago"
+            } else {
+                return Math.round(minutes) + " minutes ago";
+            }
+
+        } else {
+            if(Math.round(hours) === 1){
+                return "hour ago"
+
+            } else {
+                return Math.round(hours) + " hours ago";
+            }
+
+        }
+    } else {
+        return Math.ceil(days) + "days ago";
+    }
 }
