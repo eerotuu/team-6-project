@@ -11,6 +11,7 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     background-size: 100% 100%;
+    background-attachment: fixed;
 }
 
 img {
@@ -74,6 +75,7 @@ table, th, td{
 }
 
 #h1 {
+    color: black;
     font-size: 50px;
     width: auto;
     border: black 1px solid;
@@ -90,13 +92,13 @@ table, th, td{
 
 #comparison {
     padding-top: 40px;
-    color: black;
+    color: white;
     font-weight: bold;
 }
 
 #compare {
     margin-top: 8px;
-    background-image: linear-gradient(white,black);
+    background-image: linear-gradient(whitesmoke,black);
     border: black 1px solid;
     width: 100px;
     height: 40px;
@@ -104,8 +106,8 @@ table, th, td{
 }
 
 #eventbutton {
-    color: black;
-    background-image: linear-gradient(white,black);
+    color: white;
+    background-image: linear-gradient(whitesmoke,black);
     border: black 1px solid;
     width: 150px;
     height: 40px;
@@ -113,12 +115,16 @@ table, th, td{
 }
 
 #hidebutton {
-    color: black;
-    background-image: linear-gradient(white,black);
+    color: white;
+    background-image: linear-gradient(whitesmoke,black);
     border: black 1px solid;
     width: 150px;
     height: 40px;
     font-weight: bold;
+}
+
+#tablecap {
+    color: black;
 }
 
 #footerbar {
