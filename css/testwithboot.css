@@ -7,10 +7,10 @@ html {
 
 body {
     background-color: #333;
-    background-image: url("../img/3.jpg");
+    background-image: url("../img/Football.jpg");
     background-position: center;
     background-repeat: no-repeat;
-    background-size: 100% 100%;
+    background-size: cover;
     background-attachment: fixed;
 }
 
@@ -47,6 +47,10 @@ table, th, td{
     background-position: center;
     background-repeat: no-repeat;
     background-size: auto;
+}
+
+.container {
+    margin-bottom: 100px;
 }
 
 .sticky {
@@ -92,7 +96,7 @@ table, th, td{
 
 #comparison {
     padding-top: 40px;
-    color: white;
+    color: black;
     font-weight: bold;
 }
 
@@ -103,6 +107,11 @@ table, th, td{
     width: 100px;
     height: 40px;
     font-weight: bold;
+}
+
+#comparisonResult {
+    color: white;
+
 }
 
 #eventbutton {
