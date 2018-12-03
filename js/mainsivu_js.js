@@ -1,20 +1,7 @@
-window.onscroll = function (){
-    pageScroll();
-};
-window.onload = function() {
+window.onload = function () {
     document.getElementById('hidebutton').style.visibility = 'hidden';
     getAllEvents();
 };
-var navbar = document.getElementsByClassName('topnav');
-var sticky = navbar.offsetTop;
-
-function pageScroll() {
-    if (window.pageYOffset >= sticky) {
-        navbar.classList.add('sticky');
-    } else {
-        navbar.classList.remove('sticky');
-    }
-}
 
 function easterEgg() {
     alert('You found Easter egg!');
@@ -22,36 +9,59 @@ function easterEgg() {
 
 function tableCreate() {
     document.getElementById('hidebutton').style.visibility = 'visible';
-    var place = document.getElementById('tablespace');
-    var tbl = document.createElement('table');
+    let upcomingEvents = [];
+    eventArray.forEach(function (event) {
+        if (new Date(event["Date"]).getTime() > Date.now()) {
+            upcomingEvents.push(event);
+        }
+    });
+    let place = document.getElementById('tablespace');
+    let tbl = document.createElement('table');
     tbl.style.width = '20%';
     tbl.setAttribute('border', '1');
-    var tbdy = document.createElement('tbody');
-    for (var i = 0; i < 1; i++) {
-        var tr = document.createElement('tr');
-        for (var j = 0; j < 2; j++) {
-            if (i === 3 && j === 3) {
-                break;
-            } else {
-                var td = document.createElement('td');
-                td.appendChild(document.createTextNode('testi'));
-                tr.appendChild(document.createTextNode('Event: '));
-                tr.appendChild(td);
-            }
+    let tBody = document.createElement('tbody');
+    let td1 = document.createElement('td');
+    let td2 = document.createElement('td');
+    let td3 = document.createElement('td');
+    let td4 = document.createElement('td');
+    let td5 = document.createElement('td');
+    let td6 = document.createElement('td');
+    td1.innerHTML = "Date";
+    td2.innerHTML = "Home team";
+    td3.innerHTML = "Away team";
+    td4.innerHTML = "Home win factor";
+    td5.innerHTML = "Draw factor";
+    td6.innerHtml = "Away win factor";
+    tBody.appendChild(td1);
+    tBody.appendChild(td2);
+    tBody.appendChild(td3);
+    tBody.appendChild(td4);
+    tBody.appendChild(td5);
+    tBody.appendChild(td6);
+    for (let i = 0; i < upcomingEvents.length; i++) {
+        let tr = document.createElement('tr');
+        let homeTeamName = eventArray[i]["Name"].split(" v ")[0];
+        let awayTeamName = eventArray[i]["Name"].split(" v ")[1];
+        let formattedEvent = [eventArray[i]["Date"], homeTeamName, awayTeamName, eventArray[i]["HomeTeam"], eventArray[i]["Draw"], eventArray[i]["AwayTeam"]];
+        for (let j = 0; j < formattedEvent.length; j++) {
+            let td = document.createElement('td');
+            td.innerHTML = formattedEvent[j];
+            tr.appendChild(td);
         }
-        tbdy.appendChild(tr);
+        tBody.appendChild(tr);
     }
-    tbl.appendChild(tbdy);
+    tbl.appendChild(tBody);
     place.appendChild(tbl);
-    var button = document.getElementById('eventbutton');
+    let button = document.getElementById('eventbutton');
     button.parentNode.removeChild(button);
 }
+
 function hideEvents() {
     var x = document.getElementById('tablespace');
-    if(x.style.display === 'none'){
+    if (x.style.display === 'none') {
         document.getElementById('hidebutton').innerHTML = 'Hide matches';
         x.style.display = 'block';
-    }else {
+    } else {
         document.getElementById('hidebutton').innerHTML = 'Show matches';
         x.style.display = 'none';
     }
@@ -73,7 +83,7 @@ function showEvents(rankedTeams) {
     firstRow.appendChild(td3);
     tBody.appendChild(firstRow);
 
-    for (let i = 0; i < rankedTeams.length; i++){
+    for (let i = 0; i < rankedTeams.length; i++) {
         let row = document.createElement('tr');
         let rankCell = document.createElement('td');
         rankCell.innerHTML = (i + 1).toString();
@@ -128,13 +138,13 @@ function compareTeams() {
     } else {
         alert("Either you wrote invalid team name(s) or there are no records between these teams.")
     }
-
 }
 
-let httpRequest;
 let eventArray;
 let teams;
+
 function getAllEvents() {
+    let httpRequest;
     let url = "http://81.197.165.237/api/events";
     if (window.XMLHttpRequest) { // Mozilla, Safari, ...
         httpRequest = new XMLHttpRequest();
@@ -162,20 +172,20 @@ function getAllEvents() {
     // now do the actual AJAX request
     httpRequest.open('GET', url);
     httpRequest.send();
-}
 
-function alertContents() {
-    if (httpRequest.readyState === 4) {
-        if (httpRequest.status === 200) {
-            //alert(httpRequest.responseText);
-            eventArray = JSON.parse(httpRequest.responseText);
-            let rankedTeams = rankTeams();
-            showEvents(rankedTeams);
-        } else if (httpRequest.status === 404) {
-            alert("Site is DOWN!");
-        } else {
-            alert('There was a problem with the request.');
-            console.log(httpRequest.status);
+    function alertContents() {
+        if (httpRequest.readyState === 4) {
+            if (httpRequest.status === 200) {
+                //alert(httpRequest.responseText);
+                eventArray = JSON.parse(httpRequest.responseText);
+                let rankedTeams = rankTeams();
+                showEvents(rankedTeams);
+            } else if (httpRequest.status === 404) {
+                alert("Site is DOWN!");
+            } else {
+                alert('There was a problem with the request.');
+                console.log(httpRequest.status);
+            }
         }
     }
 }
@@ -189,17 +199,14 @@ function rankTeams() {
     eventArray.forEach(function (event) {
         let homeTeamName = event["Name"].split(" v ")[0];
         let awayTeamName = event["Name"].split(" v ")[1];
-        if (homeTeamName == undefined || awayTeamName == undefined) {
-            console.log("flag");
-        }
         if (!teamNames.includes(homeTeamName)) {
             teamNames.push(homeTeamName);
-            let team = {name:homeTeamName, score:100};
+            let team = {name: homeTeamName, score: 100};
             teams.push(team);
         }
         if (!teamNames.includes(awayTeamName)) {
             teamNames.push(awayTeamName);
-            let team = {name:awayTeamName, score:100};
+            let team = {name: awayTeamName, score: 100};
             teams.push(team);
         }
     });
@@ -234,26 +241,20 @@ function rankTeams() {
     });
     //Order teams so that the team with the highest score is in index 0.
     teams.sort(function (a, b) {
-		if (a.score > b.score) {
-			return -1;
-		} else if (a.score < b.score) {
-			return 1;
-		}
-		return 0;
+        if (a.score > b.score) {
+            return -1;
+        } else if (a.score < b.score) {
+            return 1;
+        }
+        return 0;
     });
+    //Remove the lowest score from all scores so the ranking looks cleaner
     let lowestScore = teams[teams.length - 1].score;
     teams.forEach(function (team) {
-       team.score -= lowestScore;
-       team.score = Math.round(team.score * 100) / 100
+        team.score -= lowestScore;
+        team.score = Math.round(team.score * 100) / 100
     });
     return teams;
 }
 
-var ypos;
-var image;
-window.addEventListener('scroll', function() {
-    ypos = window.pageYOffset;
-    image = document.getElementById('centerblock');
-    image.style.top = ypos * 0.6 + 'px';
-});
 
