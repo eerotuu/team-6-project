@@ -40,8 +40,7 @@ All results are returned in JSON format.
     * **Content:** `Allow: Get`
 ### Sample Call
 **AJAX**
-   ```javascript
-let url = "http://81.197.165.237/api/events";
+```javascript
 if (window.XMLHttpRequest) { // Mozilla, Safari, ...
     httpRequest = new XMLHttpRequest();
 } else if (window.ActiveXObject) { // IE
@@ -56,39 +55,46 @@ if (window.XMLHttpRequest) { // Mozilla, Safari, ...
         }
     }
 }
-    
-if (!httpRequest) {
+
+if (!httpRequest) {      
     alert('Giving up :( Cannot create an XMLHTTP instance');
     return false;
 }
-    
-httpRequest.onreadystatechange = alertContents;
-httpRequest.open('GET', url);
-httpRequest.send();
 
-function alertContents() {
-    if (httpRequest.readyState === 4) {
-        if (httpRequest.status === 200) {
-            alert(httpRequest.responseText);
-        } else if (httpRequest.status === 404) {
-            alert("Site is DOWN!");
-        } else {
-            alert('There was a problem with the request.');
-            console.log(httpRequest.status);
-        }
+xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        alert(this.responseText);
     }
-}
-
-
-   ```
+};
+xhttp.open("GET", "http://81.197.165.237/api/events", true);
+xhttp.send();
+```
 ## Show Comments
+* **List all comments** `/api/comments`
+### Success responses
+* **Code:** 200 - OK
+    * **Example content:**   
+        ```
+        {
+            "id": "3",
+            "name": "Jesus",
+            "time_stamp": "2018-12-03 12:15:11",
+            "message": "Hitler did nothing wrong."
+        }
+        ```
+    * **If data not exist:**   `Data Not Found`
+         
 
+### Error responses
+* **Code:** 405 - Method not allowed
+    * **Content:** `Allow: Get`
 
+    
 ## Post Comment
 * **Required parameters**  
 `name=[string]`  
 `message=[string]`
-* **POST comment:**  `/api/comment/?name=nick&message=hello`
+* **POST comment:**  `/api/comments/?name=nick&message=hello`
 
 ### Success responses
 * **Code:** 201 - Created
@@ -106,7 +112,34 @@ function alertContents() {
     
 ### Sample Call
 **AJAX**
-   ```
-    Sample call here
-   ```
+```javascript
+if (window.XMLHttpRequest) { // Mozilla, Safari, ...
+    httpRequest = new XMLHttpRequest();
+} else if (window.ActiveXObject) { // IE
+    try {
+        httpRequest = new ActiveXObject("Msxml2.XMLHTTP");
+    }
+    catch (e) {
+        try {
+            httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        catch (e) {
+        }
+    }
+}
+
+if (!httpRequest) {      
+    alert('Giving up :( Cannot create an XMLHTTP instance');
+    return false;
+}
+
+xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        alert(this.responseText);
+    }
+};
+
+xhttp.open("POST","http://81.197.165.237/api/comments/?name=test&message=test", true);
+xhttp.send();
+```
 
