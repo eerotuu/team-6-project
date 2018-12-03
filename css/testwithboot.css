@@ -156,4 +156,85 @@ table, th, td{
     font-weight: bold;
 }
 
+.adsspace {
+    float: left;
+    border: black 1px solid;
+    margin-left: 5px;
+    margin-top: 20px;
+    width: 180px;
+    height: 600px;
+    background-color: #fff;
+    overflow: hidden;
+    position: relative;
+}
+
+.adsspace2 {
+    float: right;
+    border: black 1px solid;
+    margin-right: 5px;
+    margin-top: 20px;
+    width: 180px;
+    height: 600px;
+    background-color: #fff;
+    overflow: hidden;
+    position: relative;
+}
+.adsspace .adsimg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    transition: all ease-in-out 700ms;
+    -webkit-transition: all ease-in-out 700ms;
+    -moz-transition: all ease-in-out 700ms
+}
+
+.adsspace2 .adsimg2 {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    transition: all ease-in-out 700ms;
+    -webkit-transition: all ease-in-out 700ms;
+    -moz-transition: all ease-in-out 700ms;
+}
+
+.adsspace #adsimg3 {
+    background-image: url("../img/addnumber3.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.adsspace #adsimg2 {
+    background-image: url("../img/addnumber2.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.adsspace #adsimg1 {
+    background-image: url("../img/addnumber1.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.adsspace2 #adsimg6 {
+    background-image: url("../img/test3.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.adsspace2 #adsimg5 {
+    background-image: url("../img/test2.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.adsspace2 #adsimg4 {
+    background-image: url("../img/test1.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
 
