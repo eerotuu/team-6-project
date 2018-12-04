@@ -16,7 +16,7 @@ class Comment{
     # Read all comments
 	function read(){
  
-		$query = "SELECT * FROM comments";
+		$query = "SELECT * FROM comments ORDER BY time_stamp DESC";
 		$stmt = $this->conn->prepare($query);
 		$stmt->execute();
 	 
@@ -34,9 +34,9 @@ class Comment{
 		$stmt = $this->conn->prepare($query);
 
 		// sanitize data and insert to object properties
-		$this->name=urldecode(strip_tags($this->name));
+		$this->name=strip_tags($this->name);
 		$this->time_stamp=htmlspecialchars(strip_tags($this->time_stamp));
-		$this->message=urldecode(strip_tags($this->message));
+		$this->message=strip_tags($this->message);
 
 		// bind parameters
 		$stmt->bindParam(":name", $this->name);
@@ -51,6 +51,20 @@ class Comment{
 		// query failed
 		return false;
 		
+	}
+	
+	function delete(){
+ 
+		$query = "DELETE FROM " . $this->table_name . " WHERE id = ?";
+		$stmt = $this->conn->prepare($query);
+		$stmt->bindParam(1, $this->id);
+
+		if($stmt->execute()){
+			return true;
+		}
+	 
+		return false;
+		 
 	}
 }
 
