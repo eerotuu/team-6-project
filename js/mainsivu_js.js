@@ -352,15 +352,17 @@ function getComments() {
                 this_comment.appendChild(row);
 
                 let message_box = document.createElement("div");
+                let message_text = document.createElement("div");
                 message_box.className = "comment-message-box";
                 if(image_url){
                     let image = document.createElement("div");
                     image.className = "comment-image";
                     image.innerHTML = "<img src='"+image_url+"'>";
                     message_box.appendChild(image);
+                    message_text.style.maxWidth="350px";
                 }
 
-                let message_text = document.createElement("div");
+
                 message_text.className = "comment-message";
                 message_text.innerHTML = message;
                 message_box.appendChild(message_text);

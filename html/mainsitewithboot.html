@@ -83,10 +83,10 @@
         <div id="comments">
             <h1>Leave comment:</h1>
             <form class="comment-post">
-                <input type="text" id="form-name" name="name" placeholder="name">
+                <input type="text" id="form-name" name="name" placeholder="name" maxlength="20">
                 <textarea  rows="3" id="form-message" cols="50" placeholder="Insert comment here."></textarea>
                 <input type="url" id="image-url" placeholder="Image url">
-                <button type="button" onclick="postComment()">Comment</button>
+                <button type="button" class="comment-button" onclick="postComment()">Comment</button>
             </form>
             <h1>Comments:</h1>
         </div>
