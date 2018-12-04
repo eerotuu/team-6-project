@@ -1,16 +1,8 @@
-window.onload = function () {
+window.addEventListener('load', function() {
     document.getElementById('hidebutton').style.visibility = 'hidden';
     getComments();
     getAllEvents();
-
-    adsLoop();
-		adsLoop2();
-		setInterval(function() {
-				adsLoop();
-				adsLoop2();
-		}, adsTimer);
-
-};
+});
 
 function easterEgg() {
     alert('You found Easter egg!');
@@ -26,7 +18,6 @@ function tableCreate() {
     });
     let place = document.getElementById('tablespace');
     let tbl = document.createElement('table');
-    tbl.style.width = '20%';
     tbl.setAttribute('border', '1');
     let tBody = document.createElement('tbody');
     let td1 = document.createElement('td');
@@ -40,7 +31,7 @@ function tableCreate() {
     td3.innerHTML = "Away team";
     td4.innerHTML = "Home win factor";
     td5.innerHTML = "Draw factor";
-    td6.innerHtml = "Away win factor";
+    td6.innerHTML = "Away win factor";
     tBody.appendChild(td1);
     tBody.appendChild(td2);
     tBody.appendChild(td3);
@@ -49,9 +40,9 @@ function tableCreate() {
     tBody.appendChild(td6);
     for (let i = 0; i < upcomingEvents.length; i++) {
         let tr = document.createElement('tr');
-        let homeTeamName = eventArray[i]["Name"].split(" v ")[0];
-        let awayTeamName = eventArray[i]["Name"].split(" v ")[1];
-        let formattedEvent = [eventArray[i]["Date"], homeTeamName, awayTeamName, eventArray[i]["HomeTeam"], eventArray[i]["Draw"], eventArray[i]["AwayTeam"]];
+        let homeTeamName = upcomingEvents[i]["Name"].split(" v ")[0];
+        let awayTeamName = upcomingEvents[i]["Name"].split(" v ")[1];
+        let formattedEvent = [upcomingEvents[i]["Date"], homeTeamName, awayTeamName, upcomingEvents[i]["HomeTeam"], upcomingEvents[i]["Draw"], upcomingEvents[i]["AwayTeam"]];
         for (let j = 0; j < formattedEvent.length; j++) {
             let td = document.createElement('td');
             td.innerHTML = formattedEvent[j];
@@ -66,7 +57,7 @@ function tableCreate() {
 }
 
 function hideEvents() {
-    var x = document.getElementById('tablespace');
+    let x = document.getElementById('tablespace');
     if (x.style.display === 'none') {
         document.getElementById('hidebutton').innerHTML = 'Hide matches';
         x.style.display = 'block';
@@ -185,7 +176,6 @@ function getAllEvents() {
     function alertContents() {
         if (httpRequest.readyState === 4) {
             if (httpRequest.status === 200) {
-                //alert(httpRequest.responseText);
                 eventArray = JSON.parse(httpRequest.responseText);
                 let rankedTeams = rankTeams();
                 showEvents(rankedTeams);
@@ -266,178 +256,11 @@ function rankTeams() {
     return teams;
 }
 
-
-var addStatus = 1;
-var adsTimer = 4000;
-
-function adsLoop() {
-		if(addStatus === 1){
-				document.getElementById('adsimg2').style.opacity = '0';
-
-				setTimeout(function () {
-						document.getElementById('adsimg1').style.right = '0px';
-						document.getElementById('adsimg1').style.zIndex = '1000';
-						document.getElementById('adsimg2').style.right = '-1200px';
-						document.getElementById('adsimg2').style.zIndex = '1500';
-						document.getElementById('adsimg3').style.right = '1200px';
-						document.getElementById('adsimg3').style.zIndex = '500';
-				},500);
-				setTimeout(function() {
-						document.getElementById('adsimg2').style.opacity = '1';
-				},1000);
-				addStatus = 2;
-		}
-
-		else if(addStatus === 2){
-				document.getElementById('adsimg3').style.opacity = '0';
-
-				setTimeout(function () {
-						document.getElementById('adsimg2').style.right = '0px';
-						document.getElementById('adsimg2').style.zIndex = '1000';
-						document.getElementById('adsimg3').style.right = '-1200px';
-						document.getElementById('adsimg3').style.zIndex = '1500';
-						document.getElementById('adsimg1').style.right = '1200px';
-						document.getElementById('adsimg1').style.zIndex = '500';
-				},500);
-				setTimeout(function() {
-						document.getElementById('adsimg3').style.opacity = '1';
-				},1000);
-				addStatus = 3;
-		}
-
-		else if(addStatus === 3){
-				document.getElementById('adsimg1').style.opacity = '0';
-
-				setTimeout(function () {
-						document.getElementById('adsimg3').style.right = '0px';
-						document.getElementById('adsimg3').style.zIndex = '1000';
-						document.getElementById('adsimg1').style.right = '-1200px';
-						document.getElementById('adsimg1').style.zIndex = '1500';
-						document.getElementById('adsimg2').style.right = '1200px';
-						document.getElementById('adsimg2').style.zIndex = '500';
-				},500);
-				setTimeout(function() {
-						document.getElementById('adsimg1').style.opacity = '1';
-				},1000);
-				addStatus = 1;
-		}
-}
-
-function adsLoop() {
-		if(addStatus === 1){
-				document.getElementById('adsimg2').style.opacity = '0';
-
-				setTimeout(function () {
-						document.getElementById('adsimg1').style.right = '0px';
-						document.getElementById('adsimg1').style.zIndex = '1000';
-						document.getElementById('adsimg2').style.right = '-1200px';
-						document.getElementById('adsimg2').style.zIndex = '1500';
-						document.getElementById('adsimg3').style.right = '1200px';
-						document.getElementById('adsimg3').style.zIndex = '500';
-				},500);
-				setTimeout(function() {
-						document.getElementById('adsimg2').style.opacity = '1';
-				},1000);
-				addStatus = 2;
-		}
-
-		else if(addStatus === 2){
-				document.getElementById('adsimg3').style.opacity = '0';
-
-				setTimeout(function () {
-						document.getElementById('adsimg2').style.right = '0px';
-						document.getElementById('adsimg2').style.zIndex = '1000';
-						document.getElementById('adsimg3').style.right = '-1200px';
-						document.getElementById('adsimg3').style.zIndex = '1500';
-						document.getElementById('adsimg1').style.right = '1200px';
-						document.getElementById('adsimg1').style.zIndex = '500';
-				},500);
-				setTimeout(function() {
-						document.getElementById('adsimg3').style.opacity = '1';
-				},1000);
-				addStatus = 3;
-		}
-
-		else if(addStatus === 3){
-				document.getElementById('adsimg1').style.opacity = '0';
-
-				setTimeout(function () {
-						document.getElementById('adsimg3').style.right = '0px';
-						document.getElementById('adsimg3').style.zIndex = '1000';
-						document.getElementById('adsimg1').style.right = '-1200px';
-						document.getElementById('adsimg1').style.zIndex = '1500';
-						document.getElementById('adsimg2').style.right = '1200px';
-						document.getElementById('adsimg2').style.zIndex = '500';
-				},500);
-				setTimeout(function() {
-						document.getElementById('adsimg1').style.opacity = '1';
-				},1000);
-				addStatus = 1;
-		}
-}
-
-var addStatus2 = 1;
-function adsLoop2() {
-		if(addStatus2 === 1){
-				document.getElementById('adsimg5').style.opacity = '0';
-
-				setTimeout(function () {
-						document.getElementById('adsimg4').style.left = '0px';
-						document.getElementById('adsimg4').style.zIndex = '1100';
-						document.getElementById('adsimg5').style.left = '-1000px';
-						document.getElementById('adsimg5').style.zIndex = '1600';
-						document.getElementById('adsimg6').style.left = '1000px';
-						document.getElementById('adsimg6').style.zIndex = '600';
-				},500);
-				setTimeout(function() {
-						document.getElementById('adsimg5').style.opacity = '1';
-				},1000);
-				addStatus2 = 2;
-		}
-
-		else if(addStatus2 === 2){
-				document.getElementById('adsimg6').style.opacity = '0';
-
-				setTimeout(function () {
-						document.getElementById('adsimg5').style.left = '0px';
-						document.getElementById('adsimg5').style.zIndex = '1100';
-						document.getElementById('adsimg6').style.left = '-1000px';
-						document.getElementById('adsimg6').style.zIndex = '1600';
-						document.getElementById('adsimg4').style.left = '1000px';
-						document.getElementById('adsimg4').style.zIndex = '600';
-				},500);
-				setTimeout(function() {
-						document.getElementById('adsimg6').style.opacity = '1';
-				},1000);
-				addStatus2 = 3;
-		}
-
-		else if(addStatus2 === 3){
-				document.getElementById('adsimg4').style.opacity = '0';
-
-				setTimeout(function () {
-						document.getElementById('adsimg6').style.left = '0px';
-						document.getElementById('adsimg6').style.zIndex = '1100';
-						document.getElementById('adsimg4').style.left = '-1000px';
-						document.getElementById('adsimg4').style.zIndex = '1600';
-						document.getElementById('adsimg5').style.left = '1000px';
-						document.getElementById('adsimg5').style.zIndex = '600';
-				},500);
-				setTimeout(function() {
-						document.getElementById('adsimg4').style.opacity = '1';
-				},1000);
-				addStatus2 = 1;
-		}
-}
-
-function scamaz() {
-		alert('You have been scammed!');
-}
-
 function postComment() {
-    var name = document.getElementById('form-name').value;
-    var message = document.getElementById('form-message').value;
-    var url = "http://81.197.165.237/api/comments/?name="+name+"&message="+message;
+    let httpRequest;
+    let name = document.getElementById('form-name').value;
+    let message = document.getElementById('form-message').value;
+    let url = "http://81.197.165.237/api/comments/?name="+name+"&message="+message;
 
     if (window.XMLHttpRequest) { // Mozilla, Safari, ...
         httpRequest = new XMLHttpRequest();
@@ -460,8 +283,8 @@ function postComment() {
     }
 
     httpRequest.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 201) {
-            var result = JSON.parse(this.responseText)
+        if (this.readyState === 4 && this.status === 201) {
+            let result = JSON.parse(this.responseText);
             alert(result.message);
             window.location.reload();
         }
@@ -494,7 +317,7 @@ function getComments() {
     }
 
     httpRequest.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
+        if (this.readyState === 4 && this.status === 200) {
             //alert(this.responseText);
             let arr = JSON.parse(this.responseText);
 
@@ -516,7 +339,7 @@ function getComments() {
                 let row = document.createElement("span");
                 row.className = "comment-header";
                 let name_text = document.createElement("div");
-                name_text.className = "comment-name"
+                name_text.className = "comment-name";
                 name_text.innerHTML = name;
                 let time_text = document.createElement("div");
                 time_text.className = "comment-time";
@@ -545,9 +368,9 @@ function getComments() {
 function mysqlTimeStampToDate(timestamp) {
     //function parses mysql datetime string and returns javascript Date object
     //input has to be in this format: 2007-06-05 15:26:02
-    var regex=/^([0-9]{2,4})-([0-1][0-9])-([0-3][0-9]) (?:([0-2][0-9]):([0-5][0-9]):([0-5][0-9]))?$/;
-    var parts=timestamp.replace(regex,"$1 $2 $3 $4 $5 $6").split(' ');
-    return new Date(parts[0],parts[1]-1,parts[2],parts[3],parts[4],parts[5]);
+    let regex=/^([0-9]{2,4})-([0-1][0-9])-([0-3][0-9]) (?:([0-2][0-9]):([0-5][0-9]):([0-5][0-9]))?$/;
+    let parts=timestamp.replace(regex,"$1 $2 $3 $4 $5 $6").split(' ');
+    return new Date(parseInt(parts[0]),parts[1]-1,parseInt(parts[2]),parseInt(parts[3]),parseInt(parts[4]),parseInt(parts[5]));
 }
 
 function calculateTimeDifference(old_time, current_time) {
