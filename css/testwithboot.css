@@ -16,6 +16,10 @@ body {
     -o-background-size: cover;
     background-size: cover;
 
+
+}
+body * {
+    //border: 1px solid red;
 }
 
 img {
@@ -50,9 +54,6 @@ table, th, td{
     background-size: auto;
 }
 
-.container {
-    margin-bottom: 100px;
-}
 
 .sticky {
     position: fixed;
@@ -89,9 +90,8 @@ table, th, td{
 }
 
 #centerblock {
-    background-image: linear-gradient(grey,black);
+    background-color: #232323;
     opacity: 0.85;
-    height: 800px;
     z-index: 1;
 }
 
@@ -134,7 +134,7 @@ table, th, td{
 }
 
 #tablecap {
-    color: black;
+    color: white;
 }
 
 #footerbar {
@@ -225,4 +225,12 @@ table, th, td{
 .adsspace2 #adsimg4 {
     background-size: cover;
     background: url("../img/test1.png") no-repeat center;
+}
+
+
+
+@media screen and (min-width: 800px) and (max-width: 1200px) {
+    #container {
+        min-width: 100%;
+    }
 }

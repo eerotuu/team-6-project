@@ -359,7 +359,7 @@ function getComments() {
                     image.className = "comment-image";
                     image.innerHTML = "<img src='"+image_url+"'>";
                     message_box.appendChild(image);
-                    message_text.style.maxWidth="350px";
+
                 }
 
 
