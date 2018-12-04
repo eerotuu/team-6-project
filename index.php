@@ -79,7 +79,7 @@ include_once 'php/api/comments.php';
             http_response_code(200);
             echo json_encode($events_arr, JSON_PRETTY_PRINT);
 		} else {
-            http_response_code(204);
+            http_response_code(204); # No Content
             echo json_encode(array("message" => "No Data Found"));
 		}
 
@@ -121,7 +121,7 @@ include_once 'php/api/comments.php';
 			http_response_code(200);
 			echo json_encode($events_arr, JSON_PRETTY_PRINT);
 		} else {
-            http_response_code(204);
+            http_response_code(204); # No Content
             echo json_encode(array("message" => "No Data Found"));
         }
 	}
@@ -140,9 +140,11 @@ include_once 'php/api/comments.php';
 		$comment = new Comment($db);
 		 
 		// get posted data from url to object array
+		date_default_timezone_set("Europe/Helsinki");
+		$current_time = "Europe/Helsinki:".time();
 		$data=(object)array(
             "name" => $parameters["name"],
-            "time_stamp" => date("Y-m-d H:i:s", time()),
+            "time_stamp" => date("Y-m-d H:i:s",  time()),
             "message" => $parameters["message"]
         );
 
@@ -207,7 +209,7 @@ include_once 'php/api/comments.php';
 				array_push($comments_arr, $comment);
 				
 			}
-            http_response_code(200);
+            http_response_code(200); # OK
             echo json_encode($comments_arr, JSON_PRETTY_PRINT);
 		} else {
             http_response_code(200);
@@ -215,7 +217,37 @@ include_once 'php/api/comments.php';
         }
 
 	}
-
+	
+	# DELETE
+	function deleteComment($id){
+		
+		// required headers
+		header("Access-Control-Allow-Origin: *");
+		header("Content-Type: application/json; charset=UTF-8");
+		header("Access-Control-Allow-Methods: POST");
+		header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+		 
+		// get database connection
+		$database = new Database();
+		$db = $database->getConnection();
+		 
+		$comment = new comment($db);
+		$comment->id = $id;
+		
+		// delete
+		if($comment->delete()){
+			http_response_code(200); # OK
+			echo json_encode(array("message" => "Comment was deleted."));
+		}
+		 
+		// if unable to delete
+		else{
+			http_response_code(503); # Service Unavailable
+			echo json_encode(array("message" => "Unable to delete comment."));
+		}
+		
+		
+	}
 	
 
 # Main
@@ -236,16 +268,16 @@ include_once 'php/api/comments.php';
             	case 'POST' :
                 	postHandler($resource[1], $parameters);
                 	break;
+				case 'DELETE' :
+					deleteHandler($resource);
+					break;
         	}
         	break;
         }
 		case null : {
-            readfile("index.html");
+            readfile("html/mainsitewithboot.html");
 		}
-		default : {
-            http_response_code(405); # Method not allowed
-            echo json_encode(array("message" => "Method not Allowed"));
-		}
+		
 
 	}
 
@@ -282,6 +314,17 @@ include_once 'php/api/comments.php';
                 http_response_code(405); # Method not allowed
                 echo json_encode(array("message" => "Method not Allowed"));
 
+		}
+	}
+	
+	function deleteHandler ($resource) {
+		if ($resource[1] == 'comments') {
+			if ( ctype_digit($resource[2]) ){
+				deleteComment($resource[2]);
+			} else {
+				 http_response_code(400); # Bad request
+				 echo json_encode(array("message" => "Unable to delete comment. id needs to be integer"));
+			}
 		}
 	}
 ?>

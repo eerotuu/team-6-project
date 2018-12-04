@@ -1,5 +1,5 @@
 # Rest API Documentation
-This document purpose is ..?
+This document contains information 
 
 ## URL
 81.197.165.237/api
@@ -8,7 +8,7 @@ This document purpose is ..?
 Resource        | Allowed Methods
 ------------    | -------------
 /events         | GET
-/comments       | GET, POST
+/comments       | GET, POST, DELETE
     
 ## Result types
 All results are returned in JSON format.
@@ -105,7 +105,7 @@ xhttp.send();
 * **Code:** 400 - Bad request
     * **Content:** `{Unable to create comment. Data is incomplete.}`   
 * **Code:** 405 - Method not allowed
-    * **Content:** ` Allow: Get|POST `
+    * **Content:** ` Allow: Get|POST|DELETE `
 * **Code:** 503 - Service unavailable
     * **Content:** `{Unable to create comment.}`
 
@@ -143,3 +143,19 @@ xhttp.open("POST","http://81.197.165.237/api/comments/?name=test&message=test", 
 xhttp.send();
 ```
 
+## Delete comment
+**Required parameters:** `[integer]`  
+  
+**DELETE comment where id 1:** `/api/comments/1`
+
+### Success responses
+* **Code:** 200 - OK
+    * Comment have been deleted or no comment found with given id
+
+### Error responses
+* **Code:** 400 - Bad request
+    * **Content:** `{Unable to delete comment. id needs to be integer.}`   
+* **Code:** 405 - Method not allowed
+    * **Content:** ` Allow: Get|POST|DELETE `
+* **Code:** 503 - Service unavailable
+    * **Content:** `{Unable to delete comment.}`
