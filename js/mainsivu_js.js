@@ -261,6 +261,9 @@ function postComment() {
     let name = document.getElementById('form-name').value;
     let message = document.getElementById('form-message').value;
     let url = "http://81.197.165.237/api/comments/?name="+name+"&message="+message;
+    if (document.getElementById('image-url').value) {
+        url += "&image_url="+document.getElementById('image-url').value;
+    }
 
     if (window.XMLHttpRequest) { // Mozilla, Safari, ...
         httpRequest = new XMLHttpRequest();
@@ -331,7 +334,7 @@ function getComments() {
                 let current_time = new Date();
                 time = calculateTimeDifference(time, current_time);
 
-
+                let image_url = comment["image_url"];
                 let message = comment["message"];
 
                 let this_comment = document.createElement("div");
@@ -348,11 +351,20 @@ function getComments() {
                 row.appendChild(time_text);
                 this_comment.appendChild(row);
 
+                let message_box = document.createElement("div");
+                message_box.className = "comment-message-box";
+                if(image_url){
+                    let image = document.createElement("div");
+                    image.className = "comment-image";
+                    image.innerHTML = "<img src='"+image_url+"'>";
+                    message_box.appendChild(image);
+                }
+
                 let message_text = document.createElement("div");
                 message_text.className = "comment-message";
                 message_text.innerHTML = message;
-                this_comment.appendChild(message_text);
-
+                message_box.appendChild(message_text);
+                this_comment.appendChild(message_box);
                 comments.appendChild(this_comment);
 
             });

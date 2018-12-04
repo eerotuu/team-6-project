@@ -19,10 +19,12 @@
 }
 
 .comment-message {
+    display: inline-block;
     padding: 10px;
     margin-left: 10px;
     display: inline-block;
     word-break: break-word;
+
 }
 
 .comment {
@@ -57,4 +59,13 @@
     display: block;
     margin: 10px;
 
+}
+
+.comment-image {
+    padding: 10px;
+    float: left;
+}
+
+.comment-message-box  {
+    display: inline-block;
 }
