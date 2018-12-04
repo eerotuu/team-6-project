@@ -21,7 +21,8 @@
 .comment-message {
     padding: 10px;
     margin-left: 10px;
-    text-align: left;
+    display: inline-block;
+    word-break: break-word;
 }
 
 .comment {
@@ -31,7 +32,7 @@
     background-color: white;
     margin: 10px;
     max-width: 500px;
-    min-width: 400px;
+
 
 }
 #comments {
@@ -48,6 +49,8 @@
 
 .comment-post #form-name, #form-message {
     padding: 6px;
+    border: 1px solid gray;
+    border-radius: 4px;
 }
 
 .comment-post *{
