@@ -6,8 +6,16 @@ html {
 }
 
 body {
+    background: #333 url("../img/Football.jpg") no-repeat center center fixed;
+    -webkit-background-size: 100%;
+    -moz-background-size: 100%;
+    -o-background-size: 100%;
+    background-size: 100%;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
     background-size: cover;
-    background: #333 url("../img/Football.jpg") no-repeat fixed center;
+
 }
 
 img {
@@ -218,4 +226,3 @@ table, th, td{
     background-size: cover;
     background: url("../img/test1.png") no-repeat center;
 }
-
