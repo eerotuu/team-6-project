@@ -104,13 +104,15 @@
     top:1px;
 }
 
-@media screen and (min-width: 800px) and (max-width: 1200px) {
+img{
+    width:100%;
+    max-width:120px;
+}
+
+@media screen and (min-width: 300px) and (max-width: 900px) {
     #comments,#form-name, #form-message, #image-url , .comment{
         width: 97%;
         max-width: none;
-        font-size: 35px;
+        font-size: 25px;
     }
-
-
-
 }
