@@ -1,3 +1,5 @@
+/*All the styling that are given directly to the elements*/
+
 html {
     width: 100%;
     height: 100%;
@@ -15,9 +17,8 @@ body {
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
-
-
 }
+
 body * {
     //border: 1px solid red;
 }
@@ -48,12 +49,13 @@ table, th, td{
     font-size: 20px;
 }
 
+/*All the classes used in the main site, including the ads*/
+
 .bg {
     height: 100%;
     background: url("../img/3.jpg") no-repeat center;
     background-size: auto;
 }
-
 
 .sticky {
     position: fixed;
@@ -75,6 +77,81 @@ table, th, td{
     text-align: center;
     opacity: 0.85;
 }
+
+.adsspace {
+    float: left;
+    border: black 1px solid;
+    margin-left: 5px;
+    margin-top: 20px;
+    width: 180px;
+    height: 600px;
+    background-color: #fff;
+    overflow: hidden;
+    position: relative;
+}
+
+.adsspace2 {
+    float: right;
+    border: black 1px solid;
+    margin-right: 5px;
+    margin-top: 20px;
+    width: 180px;
+    height: 600px;
+    background-color: #fff;
+    overflow: hidden;
+    position: relative;
+}
+
+.adsspace .adsimg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    transition: all ease-in-out 700ms;
+    -webkit-transition: all ease-in-out 700ms;
+    -moz-transition: all ease-in-out 700ms
+}
+
+.adsspace2 .adsimg2 {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    transition: all ease-in-out 700ms;
+    -webkit-transition: all ease-in-out 700ms;
+    -moz-transition: all ease-in-out 700ms;
+}
+
+.adsspace #adsimg3 {
+    background-size: cover;
+    background: url("../img/addnumber3.png") no-repeat center;
+}
+
+.adsspace #adsimg2 {
+    background-size: cover;
+    background: url("../img/addnumber2.png") no-repeat center;
+}
+
+.adsspace #adsimg1 {
+    background-size: cover;
+    background: url("../img/addnumber1.png") no-repeat center;
+}
+
+.adsspace2 #adsimg6 {
+    background-size: cover;
+    background: url("../img/test3.png") no-repeat center;
+}
+
+.adsspace2 #adsimg5 {
+    background-size: cover;
+    background: url("../img/test2.png") no-repeat center;
+}
+.adsspace2 #adsimg4 {
+    background-size: cover;
+    background: url("../img/test1.png") no-repeat center;
+}
+
+/*All the ids used in the main site, including the ads*/
 
 #logo {
     border-radius: 50%;
@@ -156,78 +233,6 @@ table, th, td{
     color: white;
     font-weight: bold;
 }
-
-.adsspace {
-    float: left;
-    border: black 1px solid;
-    margin-left: 5px;
-    margin-top: 20px;
-    width: 180px;
-    height: 600px;
-    background-color: #fff;
-    overflow: hidden;
-    position: relative;
-}
-
-.adsspace2 {
-    float: right;
-    border: black 1px solid;
-    margin-right: 5px;
-    margin-top: 20px;
-    width: 180px;
-    height: 600px;
-    background-color: #fff;
-    overflow: hidden;
-    position: relative;
-}
-.adsspace .adsimg {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    transition: all ease-in-out 700ms;
-    -webkit-transition: all ease-in-out 700ms;
-    -moz-transition: all ease-in-out 700ms
-}
-
-.adsspace2 .adsimg2 {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    transition: all ease-in-out 700ms;
-    -webkit-transition: all ease-in-out 700ms;
-    -moz-transition: all ease-in-out 700ms;
-}
-
-.adsspace #adsimg3 {
-    background-size: cover;
-    background: url("../img/addnumber3.png") no-repeat center;
-}
-.adsspace #adsimg2 {
-    background-size: cover;
-    background: url("../img/addnumber2.png") no-repeat center;
-}
-.adsspace #adsimg1 {
-    background-size: cover;
-    background: url("../img/addnumber1.png") no-repeat center;
-}
-
-.adsspace2 #adsimg6 {
-    background-size: cover;
-    background: url("../img/test3.png") no-repeat center;
-}
-
-.adsspace2 #adsimg5 {
-    background-size: cover;
-    background: url("../img/test2.png") no-repeat center;
-}
-.adsspace2 #adsimg4 {
-    background-size: cover;
-    background: url("../img/test1.png") no-repeat center;
-}
-
-
 
 @media screen and (min-width: 800px) and (max-width: 1200px) {
     #container {
