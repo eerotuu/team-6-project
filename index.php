@@ -53,12 +53,14 @@ error_reporting(E_PARSE);
 	function getEvents() {
 		header("Access-Control-Allow-Origin: *");
 		header('Content-Type: application/json');
-		
+
+		// Create required objects.
 		$database = new Database();
 		$conn = $database->getConnection();
 		$events = new Events($conn);
-		
-		$stmt = $events->read(); // get result statement
+
+		// Get result statement
+		$stmt = $events->read();
 		$num = $stmt->rowCount();
 		if ($num>0) {
 			$events_arr = array();
@@ -78,11 +80,15 @@ error_reporting(E_PARSE);
  
 				array_push($events_arr, $event);
 			}
+
             http_response_code(200);
             echo json_encode($events_arr, JSON_PRETTY_PRINT);
+
 		} else {
+
             http_response_code(204); # No Content
             echo json_encode(array("message" => "No Data Found"));
+
 		}
 
 	}
@@ -91,14 +97,20 @@ error_reporting(E_PARSE);
 	function getEventsByName(){
 		header("Access-Control-Allow-Origin: *");
 		header("Content-Type: application/json; charset=UTF-8");
-		 
+
+		// Create required objects.
 		$database = new Database();
 		$db = $database->getConnection();
 		$events = new Events($db);
+
+		// Check if keywords is set
 		$keywords=isset($_GET["name"]) ? $_GET["name"] : "";
+
+		// Get statement.
 		$stmt = $events->search($keywords);
 		$num = $stmt->rowCount();
-		 
+
+		// Check that result is not empty.
 		if($num>0){
 		 
 			$events_arr=array();
@@ -122,9 +134,12 @@ error_reporting(E_PARSE);
 		 
 			http_response_code(200);
 			echo json_encode($events_arr, JSON_PRETTY_PRINT);
+
 		} else {
+
             http_response_code(204); # No Content
             echo json_encode(array("message" => "No Data Found"));
+
         }
 	}
 	
@@ -178,6 +193,7 @@ error_reporting(E_PARSE);
 			!empty($data->message) 
 			
 		){
+			// Validate image url. Sets image_url null if url content type is not image/jpg|png|gif
 			if(!empty($data->image_url)){
 				$type = get_headers(($data->image_url), 1)['Content-Type'];
 				if(preg_match("/^(image)(.png|.jpg|.png|.jpeg|.gif)/i", $type)) {
@@ -288,7 +304,7 @@ error_reporting(E_PARSE);
     $request_method = getMethod();
     $parameters = getParameters();
 
-    # Redirect to appropriate handlers.
+    # Redirect to appropriate method handler.
 
 	switch ($resource[0]) {
         case 'api' : {
@@ -312,7 +328,7 @@ error_reporting(E_PARSE);
 
 	}
 
-
+	# Redirect to appropriate handler
 	function getHandler($resource){
 		switch($resource) {
 			case 'events' :
@@ -336,6 +352,7 @@ error_reporting(E_PARSE);
 		}
 	}
 
+	# Redirect to appropriate handler
 	function postHandler($resource, $param){
 		switch($resource) {
 			case 'comments' :
@@ -347,7 +364,8 @@ error_reporting(E_PARSE);
 
 		}
 	}
-	
+
+	# Redirect to appropriate handler
 	function deleteHandler ($resource) {
 		if ($resource[1] == 'comments') {
 			if ( ctype_digit($resource[2]) ){

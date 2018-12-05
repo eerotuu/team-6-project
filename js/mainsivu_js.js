@@ -261,7 +261,8 @@ function postComment() {
     let name = document.getElementById('form-name').value;
     let message = document.getElementById('form-message').value;
     let url = "http://127.0.0.1/api/comments";
- 
+
+    // Modify input based on optional image_url value.
 	if (document.getElementById('image-url').value){
 		var data = JSON.stringify({"name": name, "message": message, "image_url": document.getElementById('image-url').value});
 	} else {
@@ -291,6 +292,7 @@ function postComment() {
 
     httpRequest.onreadystatechange = function() {
         if (this.readyState === 4 && this.status === 201) {
+            // Alert user.
             let result = JSON.parse(this.responseText);
             alert(result.message);
             window.location.reload();
@@ -300,6 +302,7 @@ function postComment() {
 	httpRequest.open("POST",url, true);
     httpRequest.send(data);
 }
+
 function getComments() {
     let httpRequest;
     let url = "http://127.0.0.1/api/comments";
@@ -325,24 +328,31 @@ function getComments() {
 
     httpRequest.onreadystatechange = function() {
         if (this.readyState === 4 && this.status === 200) {
-            //alert(this.responseText);
-            let arr = JSON.parse(this.responseText);
 
+            let arr = JSON.parse(this.responseText);
             let comments = document.getElementById('comments');
 
+            // Create comment box for each comment
             arr.forEach(function (comment) {
+
+                // Set data into variable.
                 let name = comment["name"];
-
                 let time = comment["time_stamp"];
-                time = mysqlTimeStampToDate(time);
-                let current_time = new Date();
-                time = calculateTimeDifference(time, current_time);
-
                 let image_url = comment["image_url"];
                 let message = comment["message"];
 
+                // Convert mySQL timestamp format into JavaScript Date object.
+                time = mysqlTimeStampToDate(time);
+
+                // Calculate time difference.
+                let current_time = new Date();
+                time = calculateTimeDifference(time, current_time);
+
+                // Create div for this comment.
                 let this_comment = document.createElement("div");
                 this_comment.className = "comment";
+
+                // Create row for name and time.
                 let row = document.createElement("span");
                 row.className = "comment-header";
                 let name_text = document.createElement("div");
@@ -355,9 +365,12 @@ function getComments() {
                 row.appendChild(time_text);
                 this_comment.appendChild(row);
 
+                // Create comment box
                 let message_box = document.createElement("div");
                 let message_text = document.createElement("div");
                 message_box.className = "comment-message-box";
+
+                // Create image div if comment has image source.
                 if(image_url){
                     let image = document.createElement("div");
                     image.className = "comment-image";
@@ -366,11 +379,12 @@ function getComments() {
 
                 }
 
-
                 message_text.className = "comment-message";
                 message_text.innerHTML = message;
                 message_box.appendChild(message_text);
                 this_comment.appendChild(message_box);
+
+                // Append this comment into comments div.
                 comments.appendChild(this_comment);
 
             });
@@ -382,38 +396,43 @@ function getComments() {
     httpRequest.send();
 }
 
-
+//  Function parses mysql datetime string and returns javascript Date object
+//  Input has to be in this format: 2007-06-05 15:26:02
 function mysqlTimeStampToDate(timestamp) {
-    //function parses mysql datetime string and returns javascript Date object
-    //input has to be in this format: 2007-06-05 15:26:02
     let regex=/^([0-9]{2,4})-([0-1][0-9])-([0-3][0-9]) (?:([0-2][0-9]):([0-5][0-9]):([0-5][0-9]))?$/;
     let parts=timestamp.replace(regex,"$1 $2 $3 $4 $5 $6").split(' ');
     return new Date(parseInt(parts[0]),parts[1]-1,parseInt(parts[2]),parseInt(parts[3]),parseInt(parts[4]),parseInt(parts[5]));
 }
 
+// Checks time difference and returns suitable string
 function calculateTimeDifference(old_time, current_time) {
     let time_difference = Math.abs(old_time - current_time);
     let days = time_difference/ (1000 * 3600 * 24);
+
     if(days < 1){
+        // Convert days to hours.
         let hours = time_difference / 36e5;
+
         if(hours < 1) {
+            // Convert days to minutes.
             let minutes = ((time_difference % 86400000) % 3600000) / 60000;
-            if (minutes === 1){
+
+            // Give different string based on minute value.
+            if (Math.round(minutes) === 1){
                 return " minute ago";
             } else if (minutes < 1) {
                 return " less than minute ago"
             } else {
                 return Math.round(minutes) + " minutes ago";
             }
-
         } else {
+
+            // Give different string based on hour value.
             if(Math.round(hours) === 1){
                 return "1 hour ago"
-
             } else {
                 return Math.round(hours) + " hours ago";
             }
-
         }
     } else {
         return Math.ceil(days) + "days ago";
