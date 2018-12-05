@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+
+<!--All the necessary imports of the libraries that are required in the creation of the page-->
+
 <head>
     <meta charset="UTF-8">
     <title>Gamblerino</title>
@@ -10,6 +13,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
+
+<!--The navigation bar located on the top of the page-->
 
 <nav class="navbar navbar-inverse" id="naviontop">
     <img src="../img/die.png" id="logo" style="width:75px;height:75px" onclick="easterEgg()">
@@ -35,6 +40,8 @@
     </div>
 </nav>
 
+<!--Reservations for the ad spaces on the sides of the page-->
+
 <div class="adsspace" id="adsspace" onclick="scamaz()">
     <div class="adsimg" id="adsimg3">
 
@@ -59,6 +66,8 @@
     </div>
 </div>
 
+<!--Main contents of the page, such as the ranking table and comparison functionality-->
+
 <div class="container" id="container">
     <div class="centered text-center" id="centerblock">
         <h1 id="h1">LaLiga</h1>
@@ -80,6 +89,7 @@
         <br>
 
         <!--Comment section -->
+
         <div id="comments">
             <h1>Leave comment:</h1>
             <form class="comment-post">
@@ -90,25 +100,19 @@
             </form>
             <h1>Comments:</h1>
         </div>
-        <!--<h2 id="temp">Tähän saa loopattuu jotain</h2>
-        <table id="myTable"></table>-->
 
     </div>
 
 </div>
-<!--
-<div id="footerbar">
-    <p id="footertext"><------ tätä voi muokkaa lisää. Gamblerino productions. All rights reserved.</p>
-</div>
--->
-<!-- yksi mahdollisuus footerille, näkyvillä kokoajan, jos kokeilee niin ottaa ylemmän footerin pois
-ja poistaa tämän kommenteista niin näkee miten toimii
+
+<!--Footer of the page
 -->
 
 <div class="footer">
     <p>Gamblerino productions. All rights reserved.</p>
 </div>
 
+<!--Scripts for the styling of the page-->
 
 <script src="../js/mainsivu_js.js"></script>
 <script src="../js/mainsivu_ads.js"></script>
