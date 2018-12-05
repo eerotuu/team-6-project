@@ -8,6 +8,7 @@ class Comment{
 	public $name;
 	public $time_stamp;
 	public $message;
+	public $image_url;
 	
 	public function __construct($db){
         $this->conn = $db;
@@ -26,30 +27,34 @@ class Comment{
 	# Create comment
     # - Returns TRUE on success or FALSE on failure.
 	function create(){
- 
-		$query = "INSERT INTO " . $this->table_name . "
-				SET name=:name, time_stamp=:time_stamp, message=:message";
-				
-	    // prepare statement
-		$stmt = $this->conn->prepare($query);
+		//if($this->$image_url){
+			$query = "INSERT INTO " . $this->table_name . "
+					SET name=:name, time_stamp=:time_stamp, message=:message, image_url=:image_url";
+		//} else {
+		//	$query = "INSERT INTO " . $this->table_name . "
+		//			SET name=:name, time_stamp=:time_stamp, message=:message";
+		//}
+		// prepare statement
+			$stmt = $this->conn->prepare($query);
 
-		// sanitize data and insert to object properties
-		$this->name=strip_tags($this->name);
-		$this->time_stamp=htmlspecialchars(strip_tags($this->time_stamp));
-		$this->message=strip_tags($this->message);
+			// sanitize data and insert to object properties
+			$this->name=substr(strip_tags(urldecode($this->name)),0 ,20);
+			$this->time_stamp=htmlspecialchars(strip_tags($this->time_stamp));
+			$this->message=strip_tags(urldecode($this->message));
 
-		// bind parameters
-		$stmt->bindParam(":name", $this->name);
-		$stmt->bindParam(":time_stamp", $this->time_stamp);
-		$stmt->bindParam(":message", $this->message);
+			// bind parameters
+			$stmt->bindParam(":name", $this->name);
+			$stmt->bindParam(":time_stamp", $this->time_stamp);
+			$stmt->bindParam(":message", $this->message);
+			$stmt->bindParam(":image_url", $this->image_url);
 
-		// execute query
-		if($stmt->execute()){
-			return true;
-		}
+			// execute query
+			if($stmt->execute()){
+				return true;
+			}
 
-		// query failed
-		return false;
+			// query failed
+			return false;
 		
 	}
 	

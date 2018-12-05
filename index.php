@@ -5,6 +5,8 @@ include_once 'php/database.php';
 include_once 'php/api/events.php';
 include_once 'php/api/comments.php';
 
+error_reporting(E_PARSE);
+
 # URI parser helper functions
 # ---------------------------
 
@@ -142,10 +144,21 @@ include_once 'php/api/comments.php';
 		// get posted data from url to object array
 		date_default_timezone_set("Europe/Helsinki");
 		$current_time = "Europe/Helsinki:".time();
+		
+		
+		if($parameters["image_url"]) {
+			$url = $parameters["image_url"];
+			$type = get_headers($url, 1)['Content-Type'];
+			if(preg_match("/(image)(.png|.jpg|.png|.jpeg|.gif)/i", $type)) {
+				$image_url = $url;
+			} else {
+				$image_url;
+			}
+		}
 		$data=(object)array(
             "name" => $parameters["name"],
             "time_stamp" => date("Y-m-d H:i:s",  time()),
-            "message" => $parameters["message"]
+            "message" => $parameters["message"],
         );
 
 
@@ -162,6 +175,7 @@ include_once 'php/api/comments.php';
 			$comment->name = $data->name;
 			$comment->time_stamp = $data->time_stamp;
 			$comment->message = $data->message;
+			$comment->image_url = $image_url;
 		 
 			// create
 			if($comment->create()){
@@ -203,7 +217,8 @@ include_once 'php/api/comments.php';
 					"id" => $id,
 					"name" => $name,
 					"time_stamp" => $time_stamp,
-					"message" => $message
+					"message" => $message,
+					"image_url" => $image_url
 				);
  
 				array_push($comments_arr, $comment);
