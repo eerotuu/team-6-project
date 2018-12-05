@@ -91,10 +91,23 @@ xhttp.send();
 
     
 ## Post Comment
+
+* **Allowed input formats**
+    * JSON
+
 * **Required parameters**  
-`name=[string]`  
-`message=[string]`
-* **POST comment:**  `/api/comments/?name=nick&message=hello`
+    * `name=[string]`  
+    * `message=[string]`
+* **Optional parameters**  
+    * `image_url=[string]`
+* **Example format:**
+    ````
+    {  
+        "name": "test",
+        "message": "test",
+        "image_url": "https://cdn.frankerfacez.com/emoticon/103171/4"
+    }
+    ````
 
 ### Success responses
 * **Code:** 201 - Created
@@ -113,6 +126,18 @@ xhttp.send();
 ### Sample Call
 **AJAX**
 ```javascript
+let httpRequest;
+let name = document.getElementById('form-name').value;
+let message = document.getElementById('form-message').value;
+let url = "http://127.0.0.1/api/comments";
+ 
+if (document.getElementById('image-url').value){
+    var data = JSON.stringify({"name": name, "message": message, "image_url": document.getElementById('image-url').value});
+} else {
+    var data = JSON.stringify({"name": name, "message": message});
+}
+	
+
 if (window.XMLHttpRequest) { // Mozilla, Safari, ...
     httpRequest = new XMLHttpRequest();
 } else if (window.ActiveXObject) { // IE
@@ -127,20 +152,21 @@ if (window.XMLHttpRequest) { // Mozilla, Safari, ...
         }
     }
 }
-
-if (!httpRequest) {      
+if (!httpRequest) {
     alert('Giving up :( Cannot create an XMLHTTP instance');
     return false;
 }
 
-xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-        alert(this.responseText);
+httpRequest.onreadystatechange = function() {
+    if (this.readyState === 4 && this.status === 201) {
+        let result = JSON.parse(this.responseText);
+        alert(result.message);
+        window.location.reload();
     }
 };
-
-xhttp.open("POST","http://81.197.165.237/api/comments/?name=test&message=test", true);
-xhttp.send();
+    
+httpRequest.open("POST",url, true);   
+httpRequest.send(data);
 ```
 
 ## Delete comment

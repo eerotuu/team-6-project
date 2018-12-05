@@ -145,7 +145,7 @@ let teams;
 
 function getAllEvents() {
     let httpRequest;
-    let url = "http://81.197.165.237/api/events";
+    let url = "http://127.0.0.1/api/events";
     if (window.XMLHttpRequest) { // Mozilla, Safari, ...
         httpRequest = new XMLHttpRequest();
     } else if (window.ActiveXObject) { // IE
@@ -260,10 +260,14 @@ function postComment() {
     let httpRequest;
     let name = document.getElementById('form-name').value;
     let message = document.getElementById('form-message').value;
-    let url = "http://81.197.165.237/api/comments/?name="+name+"&message="+message;
-    if (document.getElementById('image-url').value) {
-        url += "&image_url="+document.getElementById('image-url').value;
-    }
+    let url = "http://127.0.0.1/api/comments";
+ 
+	if (document.getElementById('image-url').value){
+		var data = JSON.stringify({"name": name, "message": message, "image_url": document.getElementById('image-url').value});
+	} else {
+		var data = JSON.stringify({"name": name, "message": message});
+	}
+	
 
     if (window.XMLHttpRequest) { // Mozilla, Safari, ...
         httpRequest = new XMLHttpRequest();
@@ -293,12 +297,12 @@ function postComment() {
         }
     };
 
-    httpRequest.open("POST",url, true);
-    httpRequest.send();
+	httpRequest.open("POST",url, true);
+    httpRequest.send(data);
 }
 function getComments() {
     let httpRequest;
-    let url = "http://81.197.165.237/api/comments";
+    let url = "http://127.0.0.1/api/comments";
     if (window.XMLHttpRequest) { // Mozilla, Safari, ...
         httpRequest = new XMLHttpRequest();
     } else if (window.ActiveXObject) { // IE
@@ -357,7 +361,7 @@ function getComments() {
                 if(image_url){
                     let image = document.createElement("div");
                     image.className = "comment-image";
-                    image.innerHTML = "<img src='"+image_url+"'>";
+                    image.innerHTML = "<img src='"+image_url+"' style='max-width: 120px'>";
                     message_box.appendChild(image);
 
                 }
@@ -404,7 +408,7 @@ function calculateTimeDifference(old_time, current_time) {
 
         } else {
             if(Math.round(hours) === 1){
-                return "hour ago"
+                return "1 hour ago"
 
             } else {
                 return Math.round(hours) + " hours ago";

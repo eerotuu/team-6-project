@@ -146,36 +146,51 @@ error_reporting(E_PARSE);
 		$current_time = "Europe/Helsinki:".time();
 		
 		
+		## COMMENTED FROM POST => requires JSON format now.
+		#--------------------------------------------------
+		/*
 		if($parameters["image_url"]) {
 			$url = $parameters["image_url"];
 			$type = get_headers($url, 1)['Content-Type'];
-			if(preg_match("/(image)(.png|.jpg|.png|.jpeg|.gif)/i", $type)) {
+			if(preg_match("^(image)(.png|.jpg|.png|.jpeg|.gif)/i", $type)) {
 				$image_url = $url;
 			} else {
 				$image_url;
 			}
 		}
+		
+		
 		$data=(object)array(
             "name" => $parameters["name"],
             "time_stamp" => date("Y-m-d H:i:s",  time()),
             "message" => $parameters["message"],
-        );
-
-
+        );*/
+		#-----------------------------------
 		
-		// make sure data is not empty
+		$data = json_decode(file_get_contents("php://input"), true);
+		$data['time_stamp']= date("Y-m-d H:i:s",  time());
+		$data=(object)$data;
+		
+		// validate
 		if(
 			!empty($data->name) &&
 			!empty($data->time_stamp) &&
-			!empty($data->message)
+			!empty($data->message) 
 			
 		){
-		 
+			if(!empty($data->image_url)){
+				$type = get_headers(($data->image_url), 1)['Content-Type'];
+				if(preg_match("/^(image)(.png|.jpg|.png|.jpeg|.gif)/i", $type)) {
+				} else {
+					$data->image_url = null;
+				}
+			}
+			
 			// set the comment property values
 			$comment->name = $data->name;
 			$comment->time_stamp = $data->time_stamp;
 			$comment->message = $data->message;
-			$comment->image_url = $image_url;
+			$comment->image_url = $data->image_url;
 		 
 			// create
 			if($comment->create()){
@@ -193,7 +208,8 @@ error_reporting(E_PARSE);
 		// tell the user data is incomplete
 		else{
 			http_response_code(400); # Bad request
-			echo json_encode(array("message" => "Unable to create comment. Data is incomplete."));
+			echo json_encode(array("message" => "Data is incomplete."));
+			
 		}
 	}
 	
