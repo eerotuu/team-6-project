@@ -183,21 +183,17 @@
     $countryCode = "ES"; //Spain's country code
     $eventTypeName = "Soccer";
 
-    //Example use:
-
     //1) Perform a anonymous login to get a sessionToken
     $sessionToken = login($username, $password, $appKey);
 
     //2) Choose a time range from which events are chosen
-    $now = time();
-    $nextWeek = time(); + 7 * 24 * 60 * 60;
+	$week = + 7 * 24 * 60 * 60;
+    $now = time() + $week;	
+    $nextWeek = $now + $week + $week;
 
     //3) Choose an eventTypeName from the array received from the getAllEventTypeNames()-function
-    //In this example the name has already been chosen: '$eventTypeName = "Soccer"'
-
     //4) Choose a competition from the array received from the getCompetitionsInEventType()-function
     //Then store its id in a variable
-    //In this example the competition has already been chosen: 'competitionId = "117"'
 
     //5) Get the eventTypeId using the eventTypeName
     $eventTypeId = getEventTypeId($appKey, $sessionToken, $eventTypeName);
@@ -205,7 +201,8 @@
     //6) Choose an event from an an array received from the getEventsInEventType-function
     //Then store its Id in a variable
     $events = getEventsInEventType($appKey, $sessionToken, $eventTypeId, $countryCode, $competitionId, $now, $nextWeek);
-    //$eventId = $events[0]->id;
+	
+	// Get desired result into array.
 	$resultArray = array();
 	foreach($events as $event){
 		$eventId = $event->id;
@@ -216,15 +213,22 @@
     //7) Get the marketId
     //Events can have multiple markets, for example "Match winner", "End result"
     //getMarketId()-function looks for "End result" markets
-    //$marketId = getMarketId($appKey, $sessionToken, $eventId);
 
     //8) Get the event odds and name in an associative array
-    //var_dump(getEventOdds($appKey, $sessionToken, $marketId, $eventId));
-	$connect = mysqli_connect("localhost", "eero", "eero", "betfair");
-	if ($connect->connect_error) {
+   
+	// Create database connection
+	$conn = mysqli_connect("localhost", "eero", "eero", "betfair");
+	if ($conn->connect_error) {
 		die("Connection failed: " . $connect->connect_error);
 	} 
 	
+	// Prepare statement. On dublicate eventId value update odds.
+	$stmt = $conn->prepare("INSERT INTO events(id, Name, HomeTeam, AwayTeam, Draw, Date) VALUES (?, ?, ?, ? ,?, ?) 
+	ON DUPLICATE KEY UPDATE HomeTeam=VALUES(HomeTeam), AwayTeam=VALUES(AwayTeam), Draw=VALUES(Draw)");
+	$stmt->bind_param("isddds", $id, $Name, $HomeTeam, $AwayTeam, $Draw, $Date);
+	$affected_rows = 0;
+	
+	// Insert rows into events table. 
 	foreach($resultArray as $row) {
 		
 		//Modify Date format to SQL DATETIME() format
@@ -232,14 +236,17 @@
 		$row["Date"] = preg_replace("/[^0-9-:.]/", " ", $row["Date"]);
 		$row["Date"] = str_replace(".000", "", $row["Date"]);
 		
-		$query = "INSERT INTO events (id, Name, HomeTeam, AwayTeam, Draw, Date)
-		VALUES('".$row["id"]."', '".$row["Name"]."', '".$row["HomeTeam"]."', '".$row["AwayTeam"]."', '".$row["Draw"]."', '".$row["Date"]."')
-		ON DUPLICATE KEY UPDATE HomeTeam=VALUES(HomeTeam), AwayTeam=VALUES(AwayTeam), Draw=VALUES(Draw)";
+		$id			= $row["id"];
+		$Name		= $row["Name"];
+		$HomeTeam	= $row["HomeTeam"];
+		$AwayTeam	= $row["AwayTeam"];
+		$Draw		= $row["Draw"];
+		$Date		= $row["Date"];
 		
-		mysqli_query($connect, $query);
+		if($stmt->execute()) {
+			$affected_rows += $stmt->affected_rows ;
+		}
 	}
-	
-
-    //Check if the values are about the same in this website: https://www.betfair.com/sport/football
-    //Select Spanish La Liga as the league
-    //The values received from the Betfair API are delayed so they aren't exactly the same.
+	echo "Events between ".date("Y-m-d H:i:s", $now)." and ".date("Y-m-d H:i:s", $nextWeek)." have been updated, affected rows: " . $affected_rows;
+	$stmt->close();
+	$conn->close();

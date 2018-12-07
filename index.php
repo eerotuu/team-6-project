@@ -47,26 +47,32 @@ error_reporting(E_PARSE);
     }
  
 # Handlers
-# ------------------------------
+
+# Events resource
+# ----------------------------------------------------------------------------
 	
 	# GET ALL EVENTS
 	function getEvents() {
 		header("Access-Control-Allow-Origin: *");
 		header('Content-Type: application/json');
-
-		// Create required objects.
+		
+		// Create requierd objects.
 		$database = new Database();
 		$conn = $database->getConnection();
 		$events = new Events($conn);
-
-		// Get result statement
-		$stmt = $events->read();
+		
+		// Get result statement.
+		$stmt = $events->read(); 
+		
+		// Extract row count from statement and check that it is not empty.
 		$num = $stmt->rowCount();
 		if ($num>0) {
+			
 			$events_arr = array();
+			
 			while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
 
-                // convert row data to array and add it to output array
+                // extract row data to array and push it to output array
 				extract($row);
 
 				$event=array(
@@ -80,15 +86,11 @@ error_reporting(E_PARSE);
  
 				array_push($events_arr, $event);
 			}
-
             http_response_code(200);
             echo json_encode($events_arr, JSON_PRETTY_PRINT);
-
 		} else {
-
             http_response_code(204); # No Content
             echo json_encode(array("message" => "No Data Found"));
-
 		}
 
 	}
@@ -97,26 +99,27 @@ error_reporting(E_PARSE);
 	function getEventsByName(){
 		header("Access-Control-Allow-Origin: *");
 		header("Content-Type: application/json; charset=UTF-8");
-
+		 
 		// Create required objects.
 		$database = new Database();
 		$db = $database->getConnection();
 		$events = new Events($db);
-
-		// Check if keywords is set
+		
+		// Check if keywords is set.
 		$keywords=isset($_GET["name"]) ? $_GET["name"] : "";
-
-		// Get statement.
+		
+		// Get statement
 		$stmt = $events->search($keywords);
+		
+		// Extract row count from statement and check that it is not empty.
 		$num = $stmt->rowCount();
-
-		// Check that result is not empty.
 		if($num>0){
 		 
 			$events_arr=array();
 		 
 			while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
-
+				
+				// Extract row data to array and push it to output array.
 				extract($row);
 		 
 				$event=array(
@@ -128,40 +131,36 @@ error_reporting(E_PARSE);
 					"Date" => $Date
 				);
 		 
-		 
 				array_push($events_arr, $event);
 			}
-		 
 			http_response_code(200);
 			echo json_encode($events_arr, JSON_PRETTY_PRINT);
-
 		} else {
-
             http_response_code(204); # No Content
             echo json_encode(array("message" => "No Data Found"));
-
         }
 	}
 	
+# Comment resource
+# -------------------------------------------------------------------------------------------------------------------------	
 	# POST COMMENT
 	function postComment($parameters){
 		header("Access-Control-Allow-Origin: *");
-		header("Content-Type: application/json");
+		header("Content-Type: text/plain");
 		header("Access-Control-Allow-Methods: POST");
 		header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 		 
 		 
 		$database = new Database();
 		$db = $database->getConnection();
-		 
 		$comment = new Comment($db);
 		 
-		// get posted data from url to object array
+		// Define current timezone and time.
 		date_default_timezone_set("Europe/Helsinki");
 		$current_time = "Europe/Helsinki:".time();
 		
 		
-		## COMMENTED FROM POST => requires JSON format now.
+		## COMMENTED FORM INPUT => requires JSON format now.
 		#--------------------------------------------------
 		/*
 		if($parameters["image_url"]) {
@@ -182,50 +181,74 @@ error_reporting(E_PARSE);
         );*/
 		#-----------------------------------
 		
+		// Get input data into array object and insert current time.
 		$data = json_decode(file_get_contents("php://input"), true);
-		$data['time_stamp']= date("Y-m-d H:i:s",  time());
 		$data=(object)$data;
 		
 		// validate
 		if(
 			!empty($data->name) &&
-			!empty($data->time_stamp) &&
 			!empty($data->message) 
 			
 		){
-			// Validate image url. Sets image_url null if url content type is not image/jpg|png|gif
 			if(!empty($data->image_url)){
+				
+				// Store url content type into variable.
 				$type = get_headers(($data->image_url), 1)['Content-Type'];
-				if(preg_match("/^(image)(.png|.jpg|.png|.jpeg|.gif)/i", $type)) {
+				
+				// Check if type matches allowed content types. Example "image/png". Currently allowed: png, jpg, bmp, jpeg, gif
+				if(preg_match("/^(image)(.png|.jpg|.bmp|.jpeg|.gif)/i", $type)) {
 				} else {
+					// If does not match set image_url variable to null.
 					$data->image_url = null;
 				}
 			}
 			
-			// set the comment property values
+			
+			// Set the comment property values.
 			$comment->name = $data->name;
-			$comment->time_stamp = $data->time_stamp;
 			$comment->message = $data->message;
 			$comment->image_url = $data->image_url;
-		 
-			// create
-			if($comment->create()){
-				http_response_code(201); # Created
-				echo json_encode(array("message" => "Comment was created successfully."));
+			
+			if (!empty($data->id)) {
+				$comment->id = $data->id;
+				$stmt = $comment->readId();
+				$num = $stmt->rowCount();
+				if($num > 0) {
+					// Update
+					if($comment->update()){
+						http_response_code(202); # Accepted
+						echo json_encode(array("message" => "Comment was updated successfully."));
+					} else {
+						http_response_code(503); # Service unavailable
+						echo json_encode(array("message" => "Unable to update Comment."));
+					}
+				} else {
+					http_response_code(400); # Bad request
+					echo json_encode(array("message" => "No comment found with given id."));
+				}	
+			} else {
+				// Create
+				if($comment->create()){
+					http_response_code(201); # Created
+					echo json_encode(array("message" => "Comment was created successfully."));
+				}
+			 
+				// If unable to create the comment.
+				else{
+					http_response_code(503); # Service unavailable
+					echo json_encode(array("message" => "Unable to create Comment."));
+				}
 			}
-		 
-			// if unable to create the comment
-			else{
-				http_response_code(503); # Service unavailable
-				echo json_encode(array("message" => "Unable to create Comment."));
-			}
-		}
-		 
-		// tell the user data is incomplete
+	
+		}	 
+		// Tell the user data is incomplete.
 		else{
 			http_response_code(400); # Bad request
-			echo json_encode(array("message" => "Data is incomplete."));
-			
+			$response = array();
+			$response["message"] = "Data is incomplete. Name and Message is required";
+			echo json_encode(array("message" => "Data is incomplete. Name and Message is required"));
+			//echo json_encode($response);	
 		}
 	}
 	
@@ -296,6 +319,7 @@ error_reporting(E_PARSE);
 		
 	}
 	
+	
 
 # Main
 # ----
@@ -304,7 +328,7 @@ error_reporting(E_PARSE);
     $request_method = getMethod();
     $parameters = getParameters();
 
-    # Redirect to appropriate method handler.
+    # Redirect to appropriate handlers.
 
 	switch ($resource[0]) {
         case 'api' : {
@@ -321,6 +345,10 @@ error_reporting(E_PARSE);
         	}
         	break;
         }
+		case 'update': {
+			include 'php/update.php';
+			break;
+		}
 		case null : {
             readfile("html/mainsitewithboot.html");
 		}
@@ -328,7 +356,7 @@ error_reporting(E_PARSE);
 
 	}
 
-	# Redirect to appropriate handler
+
 	function getHandler($resource){
 		switch($resource) {
 			case 'events' :
@@ -341,10 +369,6 @@ error_reporting(E_PARSE);
 			case 'comments' :
                 getComments();
 				break;
-			case 'update' : {
-				include 'php/update.php';
-				break;
-			}
 			default :
                 http_response_code(405); # Method not allowed
                 echo json_encode(array("message" => "Method not Allowed"));
@@ -352,7 +376,6 @@ error_reporting(E_PARSE);
 		}
 	}
 
-	# Redirect to appropriate handler
 	function postHandler($resource, $param){
 		switch($resource) {
 			case 'comments' :
@@ -364,8 +387,7 @@ error_reporting(E_PARSE);
 
 		}
 	}
-
-	# Redirect to appropriate handler
+	
 	function deleteHandler ($resource) {
 		if ($resource[1] == 'comments') {
 			if ( ctype_digit($resource[2]) ){
@@ -376,5 +398,6 @@ error_reporting(E_PARSE);
 			}
 		}
 	}
+	
 ?>
 

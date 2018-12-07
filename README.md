@@ -32,7 +32,7 @@ All results are returned in JSON format.
             "Date": "2018-12-02 17:30:00"
         }
         ```
-    * **If data not exist:**   `Data Not Found`
+    * **If data not exist:**   `{"message": "Data Not Found"}`
          
 
 ### Error responses
@@ -77,9 +77,9 @@ xhttp.send();
         ```
         {
             "id": "3",
-            "name": "Jesus",
+            "name": "Pepe",
             "time_stamp": "2018-12-03 12:15:11",
-            "message": "Hitler did nothing wrong."
+            "message": "Hello."
         }
         ```
     * **If data not exist:**   `Data Not Found`
@@ -91,13 +91,14 @@ xhttp.send();
 
     
 ## Post Comment
-
+You can create and update existing comments with this method.
 * **Allowed input formats**
     * JSON
 
 * **Required parameters**  
     * `name=[string]`  
     * `message=[string]`
+    * When updating existing comment: `id=[integer]`
 * **Optional parameters**  
     * `image_url=[string]`
 * **Example format:**
@@ -108,19 +109,30 @@ xhttp.send();
         "image_url": "https://cdn.frankerfacez.com/emoticon/103171/4"
     }
     ````
+* **Example format for updating comment:**
+    ````
+    {  
+        "id": "1",
+        "name": "test",
+        "message": "Updated message",
+    }
+    ````
 
 ### Success responses
 * **Code:** 201 - Created
-    * **Content:**   `{Comment was created successfully.}`
+    * **Content:**   `{"message": "Comment was created successfully."}`
+* **Code:** 202 - Accepted
+    * **Content:**   `{"message": "Comment was updated successfully."}`
 
 
 ### Error responses
 * **Code:** 400 - Bad request
-    * **Content:** `{Unable to create comment. Data is incomplete.}`   
+    * **Content:** `{"message": "Unable to create comment. Data is incomplete."}`   
 * **Code:** 405 - Method not allowed
     * **Content:** ` Allow: Get|POST|DELETE `
 * **Code:** 503 - Service unavailable
-    * **Content:** `{Unable to create comment.}`
+    * **Content:** `{"message": "Unable to create comment."}`
+    * **Content:** `{"message": "Unable to update comment."}`
 
     
 ### Sample Call
@@ -180,8 +192,8 @@ httpRequest.send(data);
 
 ### Error responses
 * **Code:** 400 - Bad request
-    * **Content:** `{Unable to delete comment. id needs to be integer.}`   
+    * **Content:** `{"message": "Unable to delete comment. id needs to be integer."}`   
 * **Code:** 405 - Method not allowed
     * **Content:** ` Allow: Get|POST|DELETE `
 * **Code:** 503 - Service unavailable
-    * **Content:** `{Unable to delete comment.}`
+    * **Content:** `{"message": "Unable to delete comment."}`

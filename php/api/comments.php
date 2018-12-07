@@ -13,7 +13,15 @@ class Comment{
 	public function __construct($db){
         $this->conn = $db;
     }
-
+	
+	function readId() {
+		$query = "SELECT * FROM comments WHERE id=:id";
+		$stmt = $this->conn->prepare($query);
+		$stmt->bindParam(":id", $this->id);
+		$stmt->execute();
+		return $stmt;
+	}
+	
     # Read all comments
 	function read(){
  
@@ -27,24 +35,17 @@ class Comment{
 	# Create comment
     # - Returns TRUE on success or FALSE on failure.
 	function create(){
-		//if($this->$image_url){
-			$query = "INSERT INTO " . $this->table_name . "
-					SET name=:name, time_stamp=:time_stamp, message=:message, image_url=:image_url";
-		//} else {
-		//	$query = "INSERT INTO " . $this->table_name . "
-		//			SET name=:name, time_stamp=:time_stamp, message=:message";
-		//}
+		$query = "INSERT INTO " . $this->table_name . " SET name=:name, message=:message, image_url=:image_url";
+		
 		// prepare statement
 			$stmt = $this->conn->prepare($query);
 
 			// sanitize data and insert to object properties
 			$this->name=substr(strip_tags(urldecode($this->name)),0 ,20);
-			$this->time_stamp=htmlspecialchars(strip_tags($this->time_stamp));
 			$this->message=strip_tags(urldecode($this->message));
 
 			// bind parameters
 			$stmt->bindParam(":name", $this->name);
-			$stmt->bindParam(":time_stamp", $this->time_stamp);
 			$stmt->bindParam(":message", $this->message);
 			$stmt->bindParam(":image_url", $this->image_url);
 
@@ -70,6 +71,33 @@ class Comment{
 	 
 		return false;
 		 
+	}
+	
+	function update(){
+	
+		// update query
+		$query = "UPDATE " . $this->table_name . " SET name=:name, message=:message, image_url=:image_url WHERE id=:id";
+	 
+		// prepare query statement
+		$stmt = $this->conn->prepare($query);
+	 
+		// sanitize
+		$this->name=substr(strip_tags(urldecode($this->name)),0 ,20);
+		$this->message=strip_tags(urldecode($this->message));
+		$this->id=strip_tags(urldecode($this->id));
+	 
+		// bind new values
+		$stmt->bindParam(":name", $this->name);
+		$stmt->bindParam(":message", $this->message);
+		$stmt->bindParam(":image_url", $this->image_url);
+		$stmt->bindParam(":id", $this->id);
+	 
+		// execute the query
+		if($stmt->execute()){
+			return true;
+		}
+	 
+		return false;
 	}
 }
 

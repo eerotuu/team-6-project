@@ -291,12 +291,16 @@ function postComment() {
     }
 
     httpRequest.onreadystatechange = function() {
-        if (this.readyState === 4 && this.status === 201) {
-            // Alert user.
-            let result = JSON.parse(this.responseText);
+        
+		if (this.readyState === 4) {
+			let result = JSON.parse(this.responseText);
             alert(result.message);
-            window.location.reload();
-        }
+			
+			if (this.status === 201) {
+				window.location.reload();
+			}
+		}
+		
     };
 
 	httpRequest.open("POST",url, true);
