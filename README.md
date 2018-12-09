@@ -1,8 +1,7 @@
 # Rest API Documentation
-This document contains information 
+This document provides information about API calls, data parameters and responses.
 
-## URL
-81.197.165.237/api
+
 
 ## Methods
 Resource        | Allowed Methods
@@ -66,7 +65,7 @@ xhttp.onreadystatechange = function() {
         alert(this.responseText);
     }
 };
-xhttp.open("GET", "http://81.197.165.237/api/events", true);
+xhttp.open("GET", "http://127.0.0.1/api/events", true);
 xhttp.send();
 ```
 ## Show Comments
